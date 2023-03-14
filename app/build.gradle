@@ -24,9 +24,15 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField "String", "APP_ID", getProps("APP_ID")
+            buildConfigField "String", "CLIENT_ID", getProps("CLIENT_ID")
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "APP_ID", getProps("APP_ID")
+            buildConfigField "String", "CLIENT_ID", getProps("CLIENT_ID")
         }
     }
     compileOptions {
@@ -47,6 +53,21 @@ android {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
+    }
+}
+
+kapt {
+    correctErrorTypes true
+}
+
+def getProps(String propName) {
+    def propsFile = rootProject.file('local.properties')
+    if (propsFile.exists()) {
+        def props = new Properties()
+        props.load(new FileInputStream(propsFile))
+        return props[propName].toString()
+    } else {
+        return ""
     }
 }
 
