@@ -1,5 +1,6 @@
 package com.bikcodeh.notes_compose.ui.navigation
 
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -7,7 +8,11 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationScreen
+import com.stevdzasan.messagebar.rememberMessageBarState
+import com.stevdzasan.onetap.rememberOneTapSignInState
 
+@ExperimentalMaterial3Api
 @Composable
 fun SetupNavGraph(
     startDestination: String,
@@ -23,9 +28,26 @@ fun SetupNavGraph(
     }
 }
 
+@ExperimentalMaterial3Api
 fun NavGraphBuilder.authenticationRoute() {
     composable(route = Screen.Authentication.route) {
+        val oneTapState = rememberOneTapSignInState()
+        val messageBarState = rememberMessageBarState()
+        AuthenticationScreen(
+            loadingState = oneTapState.opened,
+            onButtonClicked = { oneTapState.open() },
+            oneTapState = oneTapState,
+            onDialogDismissed = {},
+            onFailedFirebaseSignIn = {
 
+            },
+            onSuccessfulFirebaseSignIn = {
+
+            },
+            messageBarState = messageBarState,
+            authenticated = false,
+            navigateToHome = {}
+        )
     }
 }
 
