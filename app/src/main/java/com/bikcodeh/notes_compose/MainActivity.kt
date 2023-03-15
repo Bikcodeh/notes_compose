@@ -9,8 +9,10 @@ import androidx.navigation.compose.rememberNavController
 import com.bikcodeh.notes_compose.ui.navigation.Screen
 import com.bikcodeh.notes_compose.ui.navigation.SetupNavGraph
 import com.bikcodeh.notes_compose.ui.theme.Notes_ComposeTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalMaterial3Api
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

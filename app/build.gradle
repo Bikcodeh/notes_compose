@@ -108,7 +108,14 @@ dependencies {
     implementation 'androidx.core:core-splashscreen:1.0.0'
 
     /** Mongo DB Realm */
+    implementation ('org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-native-mt') {
+        version {
+            strictly("1.6.0-native-mt")
+        }
+    }
     implementation 'io.realm.kotlin:library-base:1.6.1'
+    implementation "io.realm.kotlin:library-sync:1.0.2"
+
     /** Google Sign in */
     implementation "com.google.android.gms:play-services-auth:20.4.1"
 

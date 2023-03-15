@@ -1,7 +1,10 @@
 package com.bikcodeh.notes_compose.ui.navigation
 
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -9,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationScreen
+import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationViewModel
 import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
 
@@ -22,38 +26,62 @@ fun SetupNavGraph(
         startDestination = startDestination,
         navController = navController
     ) {
-        authenticationRoute()
+        authenticationRoute(
+            navigateToHome = { navController.navigate(Screen.Home.route) }
+        )
         homeRoute()
         writeRoute()
     }
 }
 
 @ExperimentalMaterial3Api
-fun NavGraphBuilder.authenticationRoute() {
+fun NavGraphBuilder.authenticationRoute(
+    navigateToHome: () -> Unit
+) {
     composable(route = Screen.Authentication.route) {
+        val viewModel: AuthenticationViewModel = hiltViewModel()
+        val loadingState by viewModel.loadingState
+        val authenticated by viewModel.authenticated
         val oneTapState = rememberOneTapSignInState()
         val messageBarState = rememberMessageBarState()
         AuthenticationScreen(
-            loadingState = oneTapState.opened,
-            onButtonClicked = { oneTapState.open() },
+            authenticated = authenticated,
+            loadingState = loadingState,
             oneTapState = oneTapState,
-            onDialogDismissed = {},
-            onFailedFirebaseSignIn = {
-
-            },
-            onSuccessfulFirebaseSignIn = {
-
-            },
             messageBarState = messageBarState,
-            authenticated = false,
-            navigateToHome = {}
+            onButtonClicked = {
+                oneTapState.open()
+                viewModel.setLoading(true)
+            },
+            onSuccessfulFirebaseSignIn = { tokenId ->
+                viewModel.signInWithMongoAtlas(
+                    tokenId = tokenId,
+                    onSuccess = {
+                        messageBarState.addSuccess("Successfully Authenticated!")
+                        viewModel.setLoading(false)
+                    },
+                    onError = {
+                        messageBarState.addError(it)
+                        viewModel.setLoading(false)
+                    }
+                )
+            },
+            onFailedFirebaseSignIn = {
+                messageBarState.addError(it)
+                viewModel.setLoading(false)
+            },
+            onDialogDismissed = { message ->
+                messageBarState.addError(Exception(message))
+                viewModel.setLoading(false)
+            },
+            navigateToHome = navigateToHome
         )
     }
 }
 
 fun NavGraphBuilder.homeRoute() {
     composable(route = Screen.Home.route) {
-
+        Text(text = "Hola")
     }
 }
 
