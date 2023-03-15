@@ -4,6 +4,7 @@ plugins {
     id 'io.realm.kotlin'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -36,12 +37,12 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
         coreLibraryDesugaringEnabled true
     }
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '1.8'
     }
     buildFeatures {
         compose true
@@ -125,6 +126,12 @@ dependencies {
 
     /** One tap compose */
     implementation 'com.github.stevdza-san:OneTapCompose:1.0.0'
+
+    // CALENDAR
+    implementation "com.maxkeppeler.sheets-compose-dialogs:calendar:1.0.2"
+
+    // CLOCK
+    implementation "com.maxkeppeler.sheets-compose-dialogs:clock:1.0.2"
 
     /** Dagger Hilt */
     implementation "com.google.dagger:hilt-android:2.44.2"
