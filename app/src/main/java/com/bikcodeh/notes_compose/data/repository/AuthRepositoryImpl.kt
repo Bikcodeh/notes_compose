@@ -4,7 +4,6 @@ import com.bikcodeh.notes_compose.BuildConfig
 import com.bikcodeh.notes_compose.domain.repository.AuthRepository
 import io.realm.kotlin.mongodb.App
 import io.realm.kotlin.mongodb.Credentials
-import io.realm.kotlin.mongodb.GoogleAuthType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -19,7 +18,10 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
         try {
             val result = withContext(Dispatchers.IO) {
                 App.create(BuildConfig.APP_ID).login(
-                    Credentials.google(tokenId, GoogleAuthType.ID_TOKEN)
+                    //Working with custom JWT to retrieve some fields in mongo
+                     Credentials.jwt(tokenId)
+                    //Normal google
+                    //Credentials.google(tokenId, GoogleAuthType.ID_TOKEN)
                 ).loggedIn
             }
             withContext(Dispatchers.Main) {
