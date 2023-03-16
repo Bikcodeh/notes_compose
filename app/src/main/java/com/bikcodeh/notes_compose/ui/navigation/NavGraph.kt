@@ -1,8 +1,11 @@
 package com.bikcodeh.notes_compose.ui.navigation
 
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -15,6 +18,7 @@ import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationViewMo
 import com.bikcodeh.notes_compose.presentation.screens.home.HomeScreen
 import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
+import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
 @Composable
@@ -82,7 +86,15 @@ fun NavGraphBuilder.homeRoute(
     navigateToWrite: () -> Unit
 ) {
     composable(route = Screen.Home.route) {
-        HomeScreen(onMenuClicked = { }, navigateToWriteScreen = navigateToWrite)
+        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+        val scope = rememberCoroutineScope()
+        HomeScreen(
+            onMenuClicked = {
+                scope.launch { drawerState.open() }
+            },
+            navigateToWriteScreen = navigateToWrite,
+            drawerState = drawerState,
+            onSignOutClicked = {})
     }
 }
 

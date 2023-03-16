@@ -7,4 +7,6 @@
     <string name="diary">Diary</string>
     <string name="date_description">Date icon</string>
     <string name="edit_description">Edit icon</string>
+    <string name="logo_description">Logo description</string>
+    <string name="sign_out">Sign out</string>
 </resources>

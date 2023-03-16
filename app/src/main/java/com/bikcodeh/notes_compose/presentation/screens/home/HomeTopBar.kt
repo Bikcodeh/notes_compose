@@ -20,7 +20,7 @@ fun HomeTopBar(
 ) {
     TopAppBar(
         navigationIcon = {
-            IconButton(onClick = { }) {
+            IconButton(onClick = onMenuClicked) {
                 Icon(
                     imageVector = Icons.Default.Menu,
                     contentDescription = stringResource(id = R.string.menu_description)
