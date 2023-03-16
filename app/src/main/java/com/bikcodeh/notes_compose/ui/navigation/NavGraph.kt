@@ -36,9 +36,15 @@ fun SetupNavGraph(
                 navController.navigate(Screen.Home.route)
             }
         )
-        homeRoute(navigateToWrite = {
-            navController.navigate(Screen.Write.route)
-        })
+        homeRoute(
+            navigateToWrite = {
+                navController.navigate(Screen.Write.route)
+            },
+            navigateToAuth = {
+                navController.popBackStack()
+                navController.navigate(Screen.Authentication.route)
+            }
+        )
         writeRoute()
     }
 }
@@ -83,7 +89,8 @@ fun NavGraphBuilder.authenticationRoute(
 
 @ExperimentalMaterial3Api
 fun NavGraphBuilder.homeRoute(
-    navigateToWrite: () -> Unit
+    navigateToWrite: () -> Unit,
+    navigateToAuth: () -> Unit
 ) {
     composable(route = Screen.Home.route) {
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -94,7 +101,8 @@ fun NavGraphBuilder.homeRoute(
             },
             navigateToWriteScreen = navigateToWrite,
             drawerState = drawerState,
-            onSignOutClicked = {})
+            navigateToAuth = navigateToAuth
+        )
     }
 }
 

@@ -9,4 +9,7 @@
     <string name="edit_description">Edit icon</string>
     <string name="logo_description">Logo description</string>
     <string name="sign_out">Sign out</string>
+    <string name="no_option">No</string>
+    <string name="yes_option">Yes</string>
+    <string name="sign_out_message">Are you sure to sign out from your google account?</string>
 </resources>

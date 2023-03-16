@@ -14,25 +14,37 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.bikcodeh.notes_compose.BuildConfig
 import com.bikcodeh.notes_compose.R
+import com.bikcodeh.notes_compose.presentation.components.DisplayAlertDialog
+import io.realm.kotlin.mongodb.App
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
 @Composable
 fun HomeScreen(
     drawerState: DrawerState,
-    onSignOutClicked: () -> Unit,
     onMenuClicked: () -> Unit,
-    navigateToWriteScreen: () -> Unit
+    navigateToWriteScreen: () -> Unit,
+    navigateToAuth: () -> Unit
 ) {
+    var dialogOpened by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
     NavigationDrawerNotes(
         drawerState = drawerState,
-        onSignOutClicked = onSignOutClicked
+        onSignOutClicked = { dialogOpened = true }
     ) {
         Scaffold(
             topBar = {
@@ -52,6 +64,21 @@ fun HomeScreen(
             }
         )
     }
+
+    DisplayAlertDialog(
+        title = stringResource(id = R.string.sign_out),
+        message = stringResource(id = R.string.sign_out_message),
+        dialogOpened = dialogOpened,
+        onDialogClosed = { dialogOpened = false },
+        onYesClicked = {
+            val user = App.Companion.create(BuildConfig.APP_ID).currentUser
+            if (user != null) {
+                scope.launch { user.logOut() }
+                navigateToAuth()
+            }
+            dialogOpened = false
+        }
+    )
 }
 
 @Composable
@@ -90,7 +117,7 @@ fun NavigationDrawerNotes(
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     }
-                }, selected = false, onClick = { })
+                }, selected = false, onClick = onSignOutClicked)
             })
         },
         content = content
