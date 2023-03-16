@@ -25,15 +25,19 @@ class AuthenticationViewModel @Inject constructor(
 
     fun signInWithMongoAtlas(
         tokenId: String,
-        onSuccess: (Boolean) -> Unit,
+        onSuccess: () -> Unit,
         onError: (Exception) -> Unit
     ) {
         viewModelScope.launch {
             authRepository.signInMongoAtlas(
                 tokenId = tokenId,
-                onSuccess = {
-                    authenticated.value = true
-                    onSuccess(it)
+                onSuccess = { isSuccess ->
+                    if (isSuccess) {
+                        authenticated.value = true
+                        onSuccess()
+                    } else {
+                        onError(Exception("Error while login"))
+                    }
                 },
                 onError = {
                     onError(it)
