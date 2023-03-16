@@ -93,6 +93,7 @@ fun NavGraphBuilder.homeRoute(
     navigateToAuth: () -> Unit
 ) {
     composable(route = Screen.Home.route) {
+        val authViewModel: AuthenticationViewModel = hiltViewModel()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         val scope = rememberCoroutineScope()
         HomeScreen(
@@ -101,7 +102,8 @@ fun NavGraphBuilder.homeRoute(
             },
             navigateToWriteScreen = navigateToWrite,
             drawerState = drawerState,
-            navigateToAuth = navigateToAuth
+            navigateToAuth = navigateToAuth,
+            onLogOut = { authViewModel.logOut() }
         )
     }
 }

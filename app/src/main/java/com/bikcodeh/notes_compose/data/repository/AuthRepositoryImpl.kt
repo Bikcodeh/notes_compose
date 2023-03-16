@@ -33,4 +33,8 @@ class AuthRepositoryImpl @Inject constructor() : AuthRepository {
             }
         }
     }
+
+    override suspend fun logOut() {
+        App.create(BuildConfig.APP_ID).currentUser?.logOut()
+    }
 }

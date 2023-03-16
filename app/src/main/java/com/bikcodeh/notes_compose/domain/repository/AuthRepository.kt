@@ -6,4 +6,6 @@ interface AuthRepository {
         onSuccess: (Boolean) -> Unit,
         onError: (Exception) -> Unit
     )
+
+    suspend fun logOut()
 }

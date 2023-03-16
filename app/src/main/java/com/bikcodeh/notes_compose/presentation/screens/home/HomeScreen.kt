@@ -17,18 +17,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.bikcodeh.notes_compose.BuildConfig
 import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.presentation.components.DisplayAlertDialog
-import io.realm.kotlin.mongodb.App
-import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
@@ -37,10 +33,10 @@ fun HomeScreen(
     drawerState: DrawerState,
     onMenuClicked: () -> Unit,
     navigateToWriteScreen: () -> Unit,
-    navigateToAuth: () -> Unit
+    navigateToAuth: () -> Unit,
+    onLogOut: () -> Unit
 ) {
     var dialogOpened by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
 
     NavigationDrawerNotes(
         drawerState = drawerState,
@@ -71,11 +67,8 @@ fun HomeScreen(
         dialogOpened = dialogOpened,
         onDialogClosed = { dialogOpened = false },
         onYesClicked = {
-            val user = App.Companion.create(BuildConfig.APP_ID).currentUser
-            if (user != null) {
-                scope.launch { user.logOut() }
-                navigateToAuth()
-            }
+            onLogOut()
+            navigateToAuth()
             dialogOpened = false
         }
     )
@@ -103,21 +96,25 @@ fun NavigationDrawerNotes(
                         contentDescription = stringResource(id = R.string.logo_description)
                     )
                 }
-                NavigationDrawerItem(label = {
-                    Row(modifier = Modifier.padding(horizontal = 12.dp)) {
-                        Image(
-                            painter = painterResource(id = R.drawable.google_logo),
-                            contentDescription = stringResource(
-                                id = R.string.logo_description
+                NavigationDrawerItem(
+                    label = {
+                        Row(modifier = Modifier.padding(horizontal = 12.dp)) {
+                            Image(
+                                painter = painterResource(id = R.drawable.google_logo),
+                                contentDescription = stringResource(
+                                    id = R.string.logo_description
+                                )
                             )
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
-                            text = stringResource(id = R.string.sign_out),
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                }, selected = false, onClick = onSignOutClicked)
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Text(
+                                text = stringResource(id = R.string.sign_out),
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    },
+                    selected = false,
+                    onClick = onSignOutClicked
+                )
             })
         },
         content = content
