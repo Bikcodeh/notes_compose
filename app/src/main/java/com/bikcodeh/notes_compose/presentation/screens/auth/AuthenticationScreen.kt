@@ -8,11 +8,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import com.bikcodeh.notes_compose.BuildConfig.CLIENT_ID
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
 import com.stevdzasan.messagebar.ContentWithMessageBar
 import com.stevdzasan.messagebar.MessageBarState
 import com.stevdzasan.onetap.OneTapSignInState
@@ -22,15 +19,12 @@ import com.stevdzasan.onetap.OneTapSignInWithGoogle
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun AuthenticationScreen(
-    authenticated: Boolean,
     loadingState: Boolean,
     oneTapState: OneTapSignInState,
     messageBarState: MessageBarState,
     onButtonClicked: () -> Unit,
-    onSuccessfulFirebaseSignIn: (String) -> Unit,
-    onFailedFirebaseSignIn: (Exception) -> Unit,
-    onDialogDismissed: (String) -> Unit,
-    navigateToHome: () -> Unit
+    onTokenIdReceived: (String) -> Unit,
+    onDialogDismissed: (String) -> Unit
 ) {
     Scaffold(
         modifier = Modifier
@@ -50,25 +44,10 @@ fun AuthenticationScreen(
     OneTapSignInWithGoogle(
         state = oneTapState,
         clientId = CLIENT_ID,
-        onTokenIdReceived = { tokenId ->
-            val credential = GoogleAuthProvider.getCredential(tokenId, null)
-            FirebaseAuth.getInstance().signInWithCredential(credential)
-                .addOnCompleteListener { task ->
-                    if(task.isSuccessful) {
-                        onSuccessfulFirebaseSignIn(tokenId)
-                    } else {
-                        task.exception?.let { it -> onFailedFirebaseSignIn(it) }
-                    }
-                }
-        },
+        onTokenIdReceived = onTokenIdReceived,
         onDialogDismissed = { message ->
             onDialogDismissed(message)
+            messageBarState.addError(Exception(message))
         }
     )
-
-    LaunchedEffect(key1 = authenticated) {
-        if (authenticated) {
-            navigateToHome()
-        }
-    }
 }

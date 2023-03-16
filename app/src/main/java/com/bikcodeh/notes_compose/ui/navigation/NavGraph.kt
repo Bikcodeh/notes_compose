@@ -45,7 +45,6 @@ fun NavGraphBuilder.authenticationRoute(
         val oneTapState = rememberOneTapSignInState()
         val messageBarState = rememberMessageBarState()
         AuthenticationScreen(
-            authenticated = authenticated,
             loadingState = loadingState,
             oneTapState = oneTapState,
             messageBarState = messageBarState,
@@ -53,28 +52,23 @@ fun NavGraphBuilder.authenticationRoute(
                 oneTapState.open()
                 viewModel.setLoading(true)
             },
-            onSuccessfulFirebaseSignIn = { tokenId ->
-                viewModel.signInWithMongoAtlas(
-                    tokenId = tokenId,
-                    onSuccess = {
-                        messageBarState.addSuccess("Successfully Authenticated!")
+            onTokenIdReceived = {
+                viewModel.signInWithMongoAtlas(it, onSuccess = {isSuccess ->
+                    if(isSuccess) {
+                        messageBarState.addSuccess("Success")
                         viewModel.setLoading(false)
-                    },
-                    onError = {
-                        messageBarState.addError(it)
+                    } else {
+                        messageBarState.addError(Exception("Error login"))
                         viewModel.setLoading(false)
                     }
-                )
+                }, onError = { error ->
+                    messageBarState.addError(error)
+                    viewModel.setLoading(false)
+                })
             },
-            onFailedFirebaseSignIn = {
-                messageBarState.addError(it)
-                viewModel.setLoading(false)
-            },
-            onDialogDismissed = { message ->
-                messageBarState.addError(Exception(message))
-                viewModel.setLoading(false)
-            },
-            navigateToHome = navigateToHome
+            onDialogDismissed = {
+                messageBarState.addError(Exception(it))
+            }
         )
     }
 }
