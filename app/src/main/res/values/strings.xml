@@ -3,4 +3,8 @@
     <string name="auth_title">Welcome back</string>
     <string name="auth_subtitle">Please sign in to continue.</string>
     <string name="login_success">Succesfully Authenticated!</string>
+    <string name="menu_description">Hamburger menu icon</string>
+    <string name="diary">Diary</string>
+    <string name="date_description">Date icon</string>
+    <string name="edit_description">Edit icon</string>
 </resources>
