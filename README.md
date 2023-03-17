@@ -1,3 +1,3 @@
-# notes_compose
+# Notes Compose
 
 ## Working progress...
