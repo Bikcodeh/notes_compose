@@ -1,4 +1,4 @@
-package com.bikcodeh.notes_compose.domain.repository.commons
+package com.bikcodeh.notes_compose.domain.commons
 
 /**
  * Class to wrap responses handling 2 possible states: Success, Error

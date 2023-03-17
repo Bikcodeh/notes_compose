@@ -1,4 +1,4 @@
-package com.bikcodeh.notes_compose.domain.repository.commons
+package com.bikcodeh.notes_compose.domain.commons
 
 import java.net.ConnectException
 import java.net.UnknownHostException
