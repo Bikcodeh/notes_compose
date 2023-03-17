@@ -1,5 +1,6 @@
 package com.bikcodeh.notes_compose.presentation.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,6 +52,7 @@ fun DiaryHolder(
 ) {
     var componentHeight by remember { mutableStateOf(0.dp) }
     val localDensity = LocalDensity.current
+    var galleryOpened by remember { mutableStateOf(false) }
     Row(modifier = Modifier.clickable(
         indication = null,
         interactionSource = remember { MutableInteractionSource() }
@@ -80,6 +83,19 @@ fun DiaryHolder(
                     maxLines = 4,
                     overflow = TextOverflow.Ellipsis
                 )
+                if (diary.images.isNotEmpty()) {
+                    ShowGalleryButton(
+                        galleryOpened = galleryOpened,
+                        galleryLoading = false,
+                        onClick = {
+                            galleryOpened = !galleryOpened
+                        })
+                }
+                AnimatedVisibility(visible = galleryOpened) {
+                    Column(modifier = Modifier.padding(all = 14.dp)) {
+                        Gallery(images = diary.images)
+                    }
+                }
             }
         }
 
@@ -115,6 +131,23 @@ fun DiaryHeader(moodName: String, time: Instant) {
                 .format(Date.from(time)),
             color = mood.contentColor,
             style = TextStyle(fontSize = MaterialTheme.typography.bodyMedium.fontSize)
+        )
+    }
+}
+
+
+@Composable
+fun ShowGalleryButton(
+    galleryOpened: Boolean,
+    galleryLoading: Boolean,
+    onClick: () -> Unit
+) {
+    TextButton(onClick = onClick) {
+        Text(
+            text = if (galleryOpened)
+                if (galleryLoading) stringResource(id = R.string.loading) else stringResource(id = R.string.hide_gallery)
+            else stringResource(id = R.string.show_gallery),
+            style = TextStyle(fontSize = MaterialTheme.typography.bodySmall.fontSize)
         )
     }
 }
