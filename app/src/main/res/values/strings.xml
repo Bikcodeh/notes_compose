@@ -2,7 +2,7 @@
     <string name="app_name">Diary App</string>
     <string name="auth_title">Welcome back</string>
     <string name="auth_subtitle">Please sign in to continue.</string>
-    <string name="login_success">Succesfully Authenticated!</string>
+    <string name="login_success">Successfully Authenticated!</string>
     <string name="menu_description">Hamburger menu icon</string>
     <string name="diary">Diary</string>
     <string name="date_description">Date icon</string>
@@ -12,4 +12,5 @@
     <string name="no_option">No</string>
     <string name="yes_option">Yes</string>
     <string name="sign_out_message">Are you sure to sign out from your google account?</string>
+    <string name="error_login">An error occurred while trying to sign in, please try again later</string>
 </resources>
