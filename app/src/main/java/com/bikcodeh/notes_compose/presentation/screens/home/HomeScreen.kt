@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
@@ -38,14 +39,16 @@ fun HomeScreen(
 ) {
     var paddingValues by remember { mutableStateOf(PaddingValues()) }
     var dialogOpened by remember { mutableStateOf(false) }
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     NavigationDrawerNotes(
         drawerState = drawerState,
         onSignOutClicked = { dialogOpened = true }
     ) {
         Scaffold(
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
-                HomeTopBar(onMenuClicked = onMenuClicked)
+                HomeTopBar(onMenuClicked = onMenuClicked, scrollBehavior = scrollBehavior)
             },
             floatingActionButton = {
                 FloatingActionButton(
