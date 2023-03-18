@@ -21,7 +21,7 @@ object MongoDB: MongoRepository {
                 .initialSubscriptions { sub ->
                     add(
                         query = sub.query("ownerId == $0", user.id),
-                        name = "User's Diaries"
+                        name = "diary"
                     )
                 }
                 .log(LogLevel.ALL)

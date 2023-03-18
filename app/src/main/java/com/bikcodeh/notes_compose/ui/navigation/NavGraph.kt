@@ -4,6 +4,7 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
@@ -15,6 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.bikcodeh.notes_compose.R
+import com.bikcodeh.notes_compose.data.repository.MongoDB
 import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationScreen
 import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationViewModel
 import com.bikcodeh.notes_compose.presentation.screens.home.HomeScreen
@@ -108,6 +110,9 @@ fun NavGraphBuilder.homeRoute(
             navigateToAuth = navigateToAuth,
             onLogOut = { authViewModel.logOut() }
         )
+        LaunchedEffect(key1 = Unit) {
+            MongoDB.configureRealm()
+        }
     }
 }
 
