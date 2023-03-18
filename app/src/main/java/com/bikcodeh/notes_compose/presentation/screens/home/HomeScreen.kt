@@ -1,6 +1,9 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.bikcodeh.notes_compose.presentation.screens.home
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -56,7 +59,7 @@ fun HomeScreen(
                 }
             },
             content = {
-
+                HomeContent(diaries = mapOf(), onClick = {})
             }
         )
     }
