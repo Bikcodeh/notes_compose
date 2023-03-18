@@ -29,7 +29,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun SetupNavGraph(
     startDestination: String,
-    navController: NavHostController
+    navController: NavHostController,
+    onDataLoaded: () -> Unit
 ) {
     NavHost(
         startDestination = startDestination,
@@ -39,7 +40,8 @@ fun SetupNavGraph(
             navigateToHome = {
                 navController.popBackStack()
                 navController.navigate(Screen.Home.route)
-            }
+            },
+            onDataLoaded = onDataLoaded
         )
         homeRoute(
             navigateToWrite = {
@@ -48,7 +50,8 @@ fun SetupNavGraph(
             navigateToAuth = {
                 navController.popBackStack()
                 navController.navigate(Screen.Authentication.route)
-            }
+            },
+            onDataLoaded = onDataLoaded
         )
         writeRoute()
     }
@@ -56,7 +59,8 @@ fun SetupNavGraph(
 
 @ExperimentalMaterial3Api
 fun NavGraphBuilder.authenticationRoute(
-    navigateToHome: () -> Unit
+    navigateToHome: () -> Unit,
+    onDataLoaded: () -> Unit
 ) {
     composable(route = Screen.Authentication.route) {
         val viewModel: AuthenticationViewModel = hiltViewModel()
@@ -65,6 +69,10 @@ fun NavGraphBuilder.authenticationRoute(
         val oneTapState = rememberOneTapSignInState()
         val messageBarState = rememberMessageBarState()
         val context = LocalContext.current
+
+        LaunchedEffect(key1 = Unit) {
+            onDataLoaded()
+        }
         AuthenticationScreen(
             authenticated = authenticated,
             loadingState = loadingState,
@@ -96,7 +104,8 @@ fun NavGraphBuilder.authenticationRoute(
 @ExperimentalMaterial3Api
 fun NavGraphBuilder.homeRoute(
     navigateToWrite: () -> Unit,
-    navigateToAuth: () -> Unit
+    navigateToAuth: () -> Unit,
+    onDataLoaded: () -> Unit
 ) {
     composable(route = Screen.Home.route) {
         val viewModel: HomeViewModel = hiltViewModel()
@@ -104,6 +113,12 @@ fun NavGraphBuilder.homeRoute(
         val authViewModel: AuthenticationViewModel = hiltViewModel()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         val scope = rememberCoroutineScope()
+
+        LaunchedEffect(key1 = diaries) {
+            if(diaries !is com.bikcodeh.notes_compose.domain.commons.Result.Loading) {
+                onDataLoaded()
+            }
+        }
         HomeScreen(
             diaries = diaries,
             onMenuClicked = {
