@@ -20,4 +20,6 @@
     <string name="show_gallery">Show Gallery</string>
     <string name="empty_diary">Empty Diary</string>
     <string name="write_something">Write something</string>
+    <string name="error_fetching_data">An error occurred fetching the data</string>
+    <string name="try_again">Please try again later</string>
 </resources>

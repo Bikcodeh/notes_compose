@@ -20,6 +20,7 @@ import com.bikcodeh.notes_compose.data.repository.MongoDB
 import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationScreen
 import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationViewModel
 import com.bikcodeh.notes_compose.presentation.screens.home.HomeScreen
+import com.bikcodeh.notes_compose.presentation.screens.home.HomeViewModel
 import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
 import kotlinx.coroutines.launch
@@ -98,10 +99,13 @@ fun NavGraphBuilder.homeRoute(
     navigateToAuth: () -> Unit
 ) {
     composable(route = Screen.Home.route) {
+        val viewModel: HomeViewModel = hiltViewModel()
+        val diaries by viewModel.diaries
         val authViewModel: AuthenticationViewModel = hiltViewModel()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         val scope = rememberCoroutineScope()
         HomeScreen(
+            diaries = diaries,
             onMenuClicked = {
                 scope.launch { drawerState.open() }
             },

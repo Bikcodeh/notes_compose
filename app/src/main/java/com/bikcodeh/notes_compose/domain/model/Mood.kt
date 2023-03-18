@@ -2,22 +2,7 @@ package com.bikcodeh.notes_compose.domain.model
 
 import androidx.compose.ui.graphics.Color
 import com.bikcodeh.notes_compose.R
-import com.bikcodeh.notes_compose.ui.theme.AngryColor
-import com.bikcodeh.notes_compose.ui.theme.BoredColor
-import com.bikcodeh.notes_compose.ui.theme.CalmColor
-import com.bikcodeh.notes_compose.ui.theme.DepressedColor
-import com.bikcodeh.notes_compose.ui.theme.DisappointedColor
-import com.bikcodeh.notes_compose.ui.theme.HappyColor
-import com.bikcodeh.notes_compose.ui.theme.HumorousColor
-import com.bikcodeh.notes_compose.ui.theme.LonelyColor
-import com.bikcodeh.notes_compose.ui.theme.NeutralColor
-import com.bikcodeh.notes_compose.ui.theme.MysteriousColor
-import com.bikcodeh.notes_compose.ui.theme.RomanticColor
-import com.bikcodeh.notes_compose.ui.theme.ShamefulColor
-import com.bikcodeh.notes_compose.ui.theme.AwfulColor
-import com.bikcodeh.notes_compose.ui.theme.SurprisedColor
-import com.bikcodeh.notes_compose.ui.theme.SuspiciousColor
-import com.bikcodeh.notes_compose.ui.theme.TenseColor
+import com.bikcodeh.notes_compose.ui.theme.*
 
 enum class Mood(
     val icon: Int,
@@ -104,4 +89,12 @@ enum class Mood(
         contentColor = Color.Black,
         containerColor = TenseColor
     )
+}
+
+fun getMoodByName(name: String): Mood {
+    return try {
+        Mood.valueOf(name)
+    }catch (e: Exception) {
+        Mood.Neutral
+    }
 }

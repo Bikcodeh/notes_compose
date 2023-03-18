@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.domain.model.Diary
 import com.bikcodeh.notes_compose.domain.model.Mood
+import com.bikcodeh.notes_compose.domain.model.getMoodByName
 import com.bikcodeh.notes_compose.presentation.util.toInstant
 import com.bikcodeh.notes_compose.ui.theme.Elevation
 import io.realm.kotlin.ext.realmListOf
@@ -69,7 +70,7 @@ fun DiaryHolder(
             modifier = Modifier
                 .clip(shape = Shapes().medium)
                 .onGloballyPositioned {
-                    componentHeight = with(localDensity) { it.size.height.dp }
+                    componentHeight = with(localDensity) { it.size.height.toDp() }
                 }, tonalElevation = Elevation.Level1
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
@@ -104,7 +105,7 @@ fun DiaryHolder(
 
 @Composable
 fun DiaryHeader(moodName: String, time: Instant) {
-    val mood by remember { mutableStateOf(Mood.valueOf(moodName)) }
+    val mood by remember { mutableStateOf(getMoodByName(moodName)) }
     Row(
         modifier = Modifier
             .fillMaxWidth()

@@ -5,14 +5,7 @@ package com.bikcodeh.notes_compose.presentation.screens.home
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
@@ -25,20 +18,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.bikcodeh.notes_compose.R
+import com.bikcodeh.notes_compose.domain.commons.fold
+import com.bikcodeh.notes_compose.domain.repository.Diaries
 import com.bikcodeh.notes_compose.presentation.components.DisplayAlertDialog
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
 @Composable
 fun HomeScreen(
+    diaries: Diaries?,
     drawerState: DrawerState,
     onMenuClicked: () -> Unit,
     navigateToWriteScreen: () -> Unit,
     navigateToAuth: () -> Unit,
     onLogOut: () -> Unit
 ) {
+    var paddingValues by remember { mutableStateOf(PaddingValues()) }
     var dialogOpened by remember { mutableStateOf(false) }
 
     NavigationDrawerNotes(
@@ -50,7 +48,14 @@ fun HomeScreen(
                 HomeTopBar(onMenuClicked = onMenuClicked)
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = navigateToWriteScreen) {
+                FloatingActionButton(
+                    modifier = Modifier.padding(
+                        end = paddingValues.calculateEndPadding(
+                            LayoutDirection.Ltr
+                        )
+                    ),
+                    onClick = navigateToWriteScreen
+                ) {
                     Icon(
                         imageVector = Icons.Default.Edit, contentDescription = stringResource(
                             id = R.string.edit_description
@@ -59,7 +64,26 @@ fun HomeScreen(
                 }
             },
             content = {
-                HomeContent(diaries = mapOf(), onClick = {})
+                paddingValues = it
+                diaries?.fold(
+                    onSuccess = { response ->
+                        HomeContent(paddingValues = it, diaries = response, onClick = {})
+                    },
+                    onError = {
+                        EmptyPage(
+                            title = stringResource(id = R.string.error_fetching_data),
+                            subtitle = stringResource(id = R.string.try_again)
+                        )
+                    },
+                    onLoading = {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                )
             }
         )
     }
