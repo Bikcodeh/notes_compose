@@ -34,7 +34,8 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Locale
+import java.util.Date
 
 @Composable
 fun WriteTopBar(
