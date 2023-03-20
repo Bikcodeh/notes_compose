@@ -1,9 +1,8 @@
 package com.bikcodeh.notes_compose.data.repository
 
 import com.bikcodeh.notes_compose.BuildConfig
-import com.bikcodeh.notes_compose.domain.commons.Failure
 import com.bikcodeh.notes_compose.domain.commons.Result
-import com.bikcodeh.notes_compose.domain.exception.UserNotAuthenticatedException
+import com.bikcodeh.notes_compose.domain.commons.makeSafeRequest
 import com.bikcodeh.notes_compose.domain.model.Diary
 import com.bikcodeh.notes_compose.domain.repository.Diaries
 import com.bikcodeh.notes_compose.domain.repository.MongoRepository
@@ -15,8 +14,8 @@ import io.realm.kotlin.mongodb.App
 import io.realm.kotlin.mongodb.sync.SyncConfiguration
 import io.realm.kotlin.query.Sort
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import org.mongodb.kbson.ObjectId
 import java.time.ZoneId
 
 object MongoDB : MongoRepository {
@@ -45,25 +44,23 @@ object MongoDB : MongoRepository {
     }
 
     override fun getAllDiaries(): Flow<Diaries> {
-        return if (user != null) {
-            try {
-                realm.query<Diary>(query = "ownerId == $0", user.id)
-                    .sort(property = "date", sortOrder = Sort.DESCENDING)
-                    .asFlow()
-                    .map { result ->
-                        Result.Success(
-                            result.list.groupBy {
-                                it.date.toInstant()
-                                    .atZone(ZoneId.systemDefault())
-                                    .toLocalDate()
-                            })
+        return makeSafeRequest {
+            realm.query<Diary>(query = "ownerId == $0", user?.id)
+                .sort(property = "date", sortOrder = Sort.DESCENDING)
+                .asFlow()
+                .map { result ->
+                    result.list.groupBy {
+                        it.date.toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
                     }
+                }
+        }
+    }
 
-            } catch (e: Exception) {
-                flow { emit(Result.Error(Failure.analyzeException(e))) }
-            }
-        } else {
-            flow { emit(Result.Error(Failure.analyzeException(UserNotAuthenticatedException()))) }
+    override fun getSelectedDiary(diaryId: ObjectId): Flow<Result<Diary>> {
+        return makeSafeRequest {
+            realm.query<Diary>(query = "_id == $0", diaryId).asFlow().map { it.list.first() }
         }
     }
 }
