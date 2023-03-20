@@ -34,6 +34,7 @@ fun HomeScreen(
     drawerState: DrawerState,
     onMenuClicked: () -> Unit,
     navigateToWriteScreen: () -> Unit,
+    navigateToWriteWithArgs: (String) -> Unit,
     navigateToAuth: () -> Unit,
     onLogOut: () -> Unit
 ) {
@@ -70,7 +71,12 @@ fun HomeScreen(
                 paddingValues = it
                 diaries?.fold(
                     onSuccess = { response ->
-                        HomeContent(paddingValues = it, diaries = response, onClick = {})
+                        HomeContent(
+                            paddingValues = it,
+                            diaries = response,
+                            onClick = { value ->
+                                navigateToWriteWithArgs(value)
+                            })
                     },
                     onError = {
                         EmptyPage(

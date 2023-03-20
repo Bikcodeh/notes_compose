@@ -23,6 +23,7 @@ import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationViewMo
 import com.bikcodeh.notes_compose.presentation.screens.home.HomeScreen
 import com.bikcodeh.notes_compose.presentation.screens.home.HomeViewModel
 import com.bikcodeh.notes_compose.presentation.screens.write.WriteScreen
+import com.bikcodeh.notes_compose.presentation.screens.write.WriteViewModel
 import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
 import kotlinx.coroutines.launch
@@ -48,6 +49,9 @@ fun SetupNavGraph(
         homeRoute(
             navigateToWrite = {
                 navController.navigate(Screen.Write.route)
+            },
+            navigateToWriteWithArgs = {
+                navController.navigate(Screen.Write.passDiaryId(it))
             },
             navigateToAuth = {
                 navController.popBackStack()
@@ -110,6 +114,7 @@ fun NavGraphBuilder.authenticationRoute(
 @ExperimentalMaterial3Api
 fun NavGraphBuilder.homeRoute(
     navigateToWrite: () -> Unit,
+    navigateToWriteWithArgs: (String) -> Unit,
     navigateToAuth: () -> Unit,
     onDataLoaded: () -> Unit
 ) {
@@ -131,6 +136,7 @@ fun NavGraphBuilder.homeRoute(
                 scope.launch { drawerState.open() }
             },
             navigateToWriteScreen = navigateToWrite,
+            navigateToWriteWithArgs = navigateToWriteWithArgs,
             drawerState = drawerState,
             navigateToAuth = navigateToAuth,
             onLogOut = { authViewModel.logOut() }
@@ -152,6 +158,8 @@ fun NavGraphBuilder.writeRoute(
             defaultValue = null
         })
     ) {
+        val viewModel: WriteViewModel = hiltViewModel()
+        val uiState = viewModel.uiState
         WriteScreen(
             selectedDiary = Diary().apply {
                 title = "Title"
