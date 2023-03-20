@@ -22,4 +22,7 @@
     <string name="write_something">Write something</string>
     <string name="error_fetching_data">An error occurred fetching the data</string>
     <string name="try_again">Please try again later</string>
+    <string name="back_description">Go back</string>
+    <string name="delete">Delete</string>
+    <string name="delete_confirmation">Are you sure you want to permanently delete this diary note %1$s ?</string>
 </resources>

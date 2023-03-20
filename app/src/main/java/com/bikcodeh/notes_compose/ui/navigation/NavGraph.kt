@@ -17,10 +17,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.data.repository.MongoDB
+import com.bikcodeh.notes_compose.domain.model.Diary
 import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationScreen
 import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationViewModel
 import com.bikcodeh.notes_compose.presentation.screens.home.HomeScreen
 import com.bikcodeh.notes_compose.presentation.screens.home.HomeViewModel
+import com.bikcodeh.notes_compose.presentation.screens.write.WriteScreen
 import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
 import kotlinx.coroutines.launch
@@ -53,7 +55,11 @@ fun SetupNavGraph(
             },
             onDataLoaded = onDataLoaded
         )
-        writeRoute()
+        writeRoute(
+            onBack = {
+                navController.popBackStack()
+            }
+        )
     }
 }
 
@@ -115,7 +121,7 @@ fun NavGraphBuilder.homeRoute(
         val scope = rememberCoroutineScope()
 
         LaunchedEffect(key1 = diaries) {
-            if(diaries !is com.bikcodeh.notes_compose.domain.commons.Result.Loading) {
+            if (diaries !is com.bikcodeh.notes_compose.domain.commons.Result.Loading) {
                 onDataLoaded()
             }
         }
@@ -135,7 +141,9 @@ fun NavGraphBuilder.homeRoute(
     }
 }
 
-fun NavGraphBuilder.writeRoute() {
+fun NavGraphBuilder.writeRoute(
+    onBack: () -> Unit
+) {
     composable(
         route = Screen.Write.route,
         arguments = listOf(navArgument(name = Screen.Write.WRITE_ARG_KEY) {
@@ -144,6 +152,13 @@ fun NavGraphBuilder.writeRoute() {
             defaultValue = null
         })
     ) {
-
+        WriteScreen(
+            selectedDiary = Diary().apply {
+                title = "Title"
+                description = "Some random text"
+            },
+            onBack = onBack,
+            onDeleteConfirmed = {}
+        )
     }
 }
