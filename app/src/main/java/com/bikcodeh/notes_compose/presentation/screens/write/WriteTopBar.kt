@@ -29,6 +29,12 @@ import androidx.compose.ui.text.style.TextAlign
 import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.domain.model.Diary
 import com.bikcodeh.notes_compose.presentation.components.DisplayAlertDialog
+import com.bikcodeh.notes_compose.presentation.util.toInstant
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 @Composable
 fun WriteTopBar(
@@ -37,6 +43,24 @@ fun WriteTopBar(
     onBack: () -> Unit,
     onDeleteConfirmed: () -> Unit
 ) {
+    val currentDate by remember { mutableStateOf(LocalDate.now()) }
+    val currentTime by remember { mutableStateOf(LocalTime.now()) }
+    val formattedDate = remember(key1 = currentDate) {
+        DateTimeFormatter
+            .ofPattern("dd MMM yyyy")
+            .format(currentDate).uppercase()
+    }
+    val formattedTime = remember(key1 = currentTime) {
+        DateTimeFormatter
+            .ofPattern("hh:mm a")
+            .format(currentTime).uppercase()
+    }
+    val selectedDiaryDateTime = remember(selectedDiary) {
+        if (selectedDiary != null) {
+            SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
+                .format(Date.from(selectedDiary.date.toInstant())).uppercase()
+        } else "Unknown"
+    }
     CenterAlignedTopAppBar(
         navigationIcon = {
             IconButton(onClick = onBack) {
@@ -58,7 +82,7 @@ fun WriteTopBar(
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = "10 jan 2023, 10:00 AM",
+                    text = if (selectedDiary != null) selectedDiaryDateTime else "$formattedDate, $formattedTime",
                     modifier = Modifier.fillMaxWidth(),
                     style = TextStyle(fontSize = MaterialTheme.typography.bodySmall.fontSize),
                     textAlign = TextAlign.Center
