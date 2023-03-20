@@ -39,6 +39,7 @@ import com.google.accompanist.pager.PagerState
 
 @Composable
 fun WriteContent(
+    uiState: UiState,
     paddingValues: PaddingValues,
     pagerState: PagerState,
     title: String,

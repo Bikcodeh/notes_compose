@@ -6,7 +6,8 @@ import android.annotation.SuppressLint
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import com.bikcodeh.notes_compose.domain.model.Diary
+import androidx.compose.runtime.LaunchedEffect
+import com.bikcodeh.notes_compose.domain.model.Mood
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 
@@ -14,26 +15,34 @@ import com.google.accompanist.pager.rememberPagerState
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun WriteScreen(
-    selectedDiary: Diary?,
+    uiState: UiState,
     onDeleteConfirmed: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    getData: () -> Unit
 ) {
     val pagerState = rememberPagerState()
+    LaunchedEffect(key1 = uiState.selectedDiaryId) {
+     getData()
+    }
+    LaunchedEffect(key1 = uiState.mood) {
+        pagerState.scrollToPage(Mood.valueOf(uiState.mood.name).ordinal)
+    }
     Scaffold(
         topBar = {
             WriteTopBar(
                 onBack = onBack,
                 onDeleteConfirmed = onDeleteConfirmed,
-                selectedDiary = selectedDiary
+                selectedDiary = uiState.selectedDiary
             )
         },
         content = {
             WriteContent(
                 paddingValues = it, pagerState = pagerState,
-                title = "",
+                title = uiState.title,
                 onTitleChanged = {},
-                description = "",
+                description = uiState.description,
                 onDescriptionChanged = {},
+                uiState = uiState
             )
         }
     )

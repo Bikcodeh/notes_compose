@@ -17,7 +17,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.data.repository.MongoDB
-import com.bikcodeh.notes_compose.domain.model.Diary
 import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationScreen
 import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationViewModel
 import com.bikcodeh.notes_compose.presentation.screens.home.HomeScreen
@@ -161,12 +160,12 @@ fun NavGraphBuilder.writeRoute(
         val viewModel: WriteViewModel = hiltViewModel()
         val uiState = viewModel.uiState
         WriteScreen(
-            selectedDiary = Diary().apply {
-                title = "Title"
-                description = "Some random text"
-            },
             onBack = onBack,
-            onDeleteConfirmed = {}
+            onDeleteConfirmed = {},
+            uiState = uiState,
+            getData = {
+                viewModel.fetchSelectedDiary()
+            }
         )
     }
 }

@@ -5,8 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.bikcodeh.notes_compose.data.repository.MongoDB
+import com.bikcodeh.notes_compose.domain.commons.fold
+import com.bikcodeh.notes_compose.domain.model.Mood
+import com.bikcodeh.notes_compose.presentation.util.getBsonObjectId
 import com.bikcodeh.notes_compose.ui.navigation.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,9 +29,47 @@ class WriteViewModel @Inject constructor(
 
     private fun getDiaryIdArgument() {
         uiState = uiState.copy(
-            selectedDiary = savedStateHandle.get<String>(
+            selectedDiaryId = savedStateHandle.get<String>(
                 key = Screen.Write.WRITE_ARG_KEY
             )
         )
+    }
+
+    fun fetchSelectedDiary() {
+        if (uiState.selectedDiaryId != null) {
+            uiState = uiState.copy(isLoading = true, error = false)
+            viewModelScope.launch {
+                MongoDB.getSelectedDiary(
+                    diaryId = org.mongodb.kbson.ObjectId(getBsonObjectId(uiState.selectedDiaryId))
+                ).collect { result ->
+                    result.fold(
+                        onSuccess = {
+                            uiState = uiState.copy(
+                                title = it.title,
+                                description = it.description,
+                                mood = Mood.valueOf(it.mood),
+                                isLoading = false,
+                                selectedDiaryId = it._id.toString(),
+                                error = false,
+                                selectedDiary = it
+                            )
+                        },
+                        onError = {
+                            uiState = uiState.copy(
+                                title = "",
+                                description = "",
+                                mood = Mood.Neutral,
+                                isLoading = false,
+                                error = true,
+                                selectedDiaryId = null,
+                                selectedDiary = null
+                            )
+
+                        },
+                        onLoading = {}
+                    )
+                }
+            }
+        }
     }
 }

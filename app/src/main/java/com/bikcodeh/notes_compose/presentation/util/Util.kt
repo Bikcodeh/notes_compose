@@ -22,3 +22,9 @@ fun RealmInstant.toInstant(): Instant {
         Instant.ofEpochSecond(sec - 1, 1_000_000 + nano.toLong())
     }
 }
+
+fun getBsonObjectId(value: String?): String {
+    if (value == null) return ""
+    val pattern = "\\((.*?)\\)".toRegex()
+    return pattern.find(value)?.value?.replace("[()]".toRegex(), "")!!
+}

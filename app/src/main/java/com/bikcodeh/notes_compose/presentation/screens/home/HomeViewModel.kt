@@ -24,7 +24,7 @@ class HomeViewModel @Inject constructor(): ViewModel() {
     private fun observeAllDiaries() {
         diaries.value = Result.Loading
         viewModelScope.launch(Dispatchers.IO) {
-            MongoDB.getAllDiaries().collect {result ->
+            MongoDB.getAllDiaries().collect { result ->
                 diaries.value = result
             }
         }
