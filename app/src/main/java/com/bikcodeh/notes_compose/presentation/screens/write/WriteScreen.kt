@@ -7,10 +7,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import com.bikcodeh.notes_compose.domain.model.Mood
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
-
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -21,6 +22,8 @@ fun WriteScreen(
     getData: () -> Unit
 ) {
     val pagerState = rememberPagerState()
+    val pageNumber = remember { derivedStateOf { pagerState.currentPage } }
+
     LaunchedEffect(key1 = uiState.selectedDiaryId) {
      getData()
     }
@@ -32,7 +35,8 @@ fun WriteScreen(
             WriteTopBar(
                 onBack = onBack,
                 onDeleteConfirmed = onDeleteConfirmed,
-                selectedDiary = uiState.selectedDiary
+                selectedDiary = uiState.selectedDiary,
+                moodName = { Mood.values()[pageNumber.value].name }
             )
         },
         content = {

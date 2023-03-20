@@ -159,6 +159,7 @@ fun NavGraphBuilder.writeRoute(
     ) {
         val viewModel: WriteViewModel = hiltViewModel()
         val uiState = viewModel.uiState
+
         WriteScreen(
             onBack = onBack,
             onDeleteConfirmed = {},

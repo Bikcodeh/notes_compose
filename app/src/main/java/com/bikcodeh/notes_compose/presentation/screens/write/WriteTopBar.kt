@@ -33,6 +33,7 @@ import com.bikcodeh.notes_compose.presentation.components.DisplayAlertDialog
 @Composable
 fun WriteTopBar(
     selectedDiary: Diary?,
+    moodName: () -> String,
     onBack: () -> Unit,
     onDeleteConfirmed: () -> Unit
 ) {
@@ -48,7 +49,7 @@ fun WriteTopBar(
         title = {
             Column() {
                 Text(
-                    text = "Happy",
+                    text = moodName(),
                     modifier = Modifier.fillMaxWidth(),
                     style = TextStyle(
                         fontSize = MaterialTheme.typography.titleLarge.fontSize,
