@@ -25,4 +25,8 @@
     <string name="back_description">Go back</string>
     <string name="delete">Delete</string>
     <string name="delete_confirmation">Are you sure you want to permanently delete this diary note %1$s ?</string>
+    <string name="feel_description">Feeling image</string>
+    <string name="title_hint">Title</string>
+    <string name="tell_me_about_it_hint">Tell me about it</string>
+    <string name="save">Save</string>
 </resources>
