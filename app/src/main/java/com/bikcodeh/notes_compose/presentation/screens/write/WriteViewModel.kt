@@ -15,6 +15,7 @@ class WriteViewModel @Inject constructor(
 ) : ViewModel() {
 
     var uiState by mutableStateOf(UiState())
+        private set
 
     init {
         getDiaryIdArgument()
