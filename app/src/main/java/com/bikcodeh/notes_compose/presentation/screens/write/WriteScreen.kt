@@ -7,23 +7,24 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.remember
+import com.bikcodeh.notes_compose.domain.model.Diary
 import com.bikcodeh.notes_compose.domain.model.Mood
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.rememberPagerState
+import com.google.accompanist.pager.PagerState
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun WriteScreen(
     uiState: UiState,
+    pagerState: PagerState,
+    moodName: () -> String,
     onDeleteConfirmed: () -> Unit,
     onBack: () -> Unit,
-    getData: () -> Unit
+    getData: () -> Unit,
+    onTitleChanged: (String) -> Unit,
+    onDescriptionChanged: (String) -> Unit,
+    onSaveClicked: (Diary) -> Unit,
 ) {
-    val pagerState = rememberPagerState()
-    val pageNumber = remember { derivedStateOf { pagerState.currentPage } }
-
     LaunchedEffect(key1 = uiState.selectedDiaryId) {
      getData()
     }
@@ -36,17 +37,18 @@ fun WriteScreen(
                 onBack = onBack,
                 onDeleteConfirmed = onDeleteConfirmed,
                 selectedDiary = uiState.selectedDiary,
-                moodName = { Mood.values()[pageNumber.value].name }
+                moodName = moodName
             )
         },
         content = {
             WriteContent(
                 paddingValues = it, pagerState = pagerState,
                 title = uiState.title,
-                onTitleChanged = {},
+                onTitleChanged = onTitleChanged,
                 description = uiState.description,
-                onDescriptionChanged = {},
-                uiState = uiState
+                onDescriptionChanged = onDescriptionChanged,
+                uiState = uiState,
+                onSaveClicked = onSaveClicked
             )
         }
     )

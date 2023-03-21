@@ -3,6 +3,7 @@ package com.bikcodeh.notes_compose.data.repository
 import com.bikcodeh.notes_compose.BuildConfig
 import com.bikcodeh.notes_compose.domain.commons.Result
 import com.bikcodeh.notes_compose.domain.commons.makeSafeRequest
+import com.bikcodeh.notes_compose.domain.commons.makeSafeRequestFlow
 import com.bikcodeh.notes_compose.domain.model.Diary
 import com.bikcodeh.notes_compose.domain.repository.Diaries
 import com.bikcodeh.notes_compose.domain.repository.MongoRepository
@@ -44,7 +45,7 @@ object MongoDB : MongoRepository {
     }
 
     override fun getAllDiaries(): Flow<Diaries> {
-        return makeSafeRequest {
+        return makeSafeRequestFlow {
             realm.query<Diary>(query = "ownerId == $0", user?.id)
                 .sort(property = "date", sortOrder = Sort.DESCENDING)
                 .asFlow()
@@ -59,8 +60,17 @@ object MongoDB : MongoRepository {
     }
 
     override fun getSelectedDiary(diaryId: ObjectId): Flow<Result<Diary>> {
-        return makeSafeRequest {
+        return makeSafeRequestFlow {
             realm.query<Diary>(query = "_id == $0", diaryId).asFlow().map { it.list.first() }
+        }
+    }
+
+    override suspend fun addNewDiary(diary: Diary): Result<Diary> {
+        return makeSafeRequest {
+            realm.write {
+                val addedDiary = copyToRealm(diary.apply { ownerId = user!!.id })
+                addedDiary
+            }
         }
     }
 }

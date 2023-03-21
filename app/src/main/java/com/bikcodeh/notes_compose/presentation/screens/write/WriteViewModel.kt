@@ -7,17 +7,23 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bikcodeh.notes_compose.data.repository.MongoDB
+import com.bikcodeh.notes_compose.di.IoDispatcher
 import com.bikcodeh.notes_compose.domain.commons.fold
+import com.bikcodeh.notes_compose.domain.model.Diary
 import com.bikcodeh.notes_compose.domain.model.Mood
 import com.bikcodeh.notes_compose.presentation.util.getBsonObjectId
 import com.bikcodeh.notes_compose.ui.navigation.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class WriteViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
     var uiState by mutableStateOf(UiState())
@@ -70,6 +76,32 @@ class WriteViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun setTitle(title: String) {
+        uiState = uiState.copy(title = title)
+    }
+
+    fun setDescription(description: String) {
+        uiState = uiState.copy(description = description)
+    }
+
+    fun insertDiary(
+        diary: Diary,
+        onSuccess: () -> Unit
+    ) {
+        viewModelScope.launch(dispatcher) {
+            MongoDB.addNewDiary(diary)
+                .fold(
+                    onSuccess = {
+                        withContext(Dispatchers.Main){ onSuccess() }
+                    },
+                    onError = {
+
+                    },
+                    onLoading = {}
+                )
         }
     }
 }

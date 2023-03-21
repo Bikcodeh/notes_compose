@@ -2,6 +2,7 @@
 
 package com.bikcodeh.notes_compose.presentation.screens.write
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bikcodeh.notes_compose.R
+import com.bikcodeh.notes_compose.domain.model.Diary
 import com.bikcodeh.notes_compose.domain.model.Mood
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -46,8 +48,10 @@ fun WriteContent(
     onTitleChanged: (String) -> Unit,
     description: String,
     onDescriptionChanged: (String) -> Unit,
+    onSaveClicked: (Diary) -> Unit,
 ) {
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -130,7 +134,22 @@ fun WriteContent(
         ) {
             Spacer(modifier = Modifier.height(12.dp))
             Button(
-                onClick = {}, modifier = Modifier
+                onClick = {
+                    if (uiState.title.isNotEmpty() && uiState.description.isNotEmpty()) {
+                        onSaveClicked(
+                            Diary().apply {
+                                this.title = uiState.title
+                                this.description = uiState.description
+                            }
+                        )
+                    } else {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.required_fields),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }, modifier = Modifier
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = Shapes().small

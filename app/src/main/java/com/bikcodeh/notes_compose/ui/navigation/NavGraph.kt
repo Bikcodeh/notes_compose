@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalPagerApi::class)
+
 package com.bikcodeh.notes_compose.ui.navigation
 
 import androidx.compose.material3.DrawerValue
@@ -5,7 +7,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -17,12 +21,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.data.repository.MongoDB
+import com.bikcodeh.notes_compose.domain.model.Mood
 import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationScreen
 import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationViewModel
 import com.bikcodeh.notes_compose.presentation.screens.home.HomeScreen
 import com.bikcodeh.notes_compose.presentation.screens.home.HomeViewModel
 import com.bikcodeh.notes_compose.presentation.screens.write.WriteScreen
 import com.bikcodeh.notes_compose.presentation.screens.write.WriteViewModel
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.rememberPagerState
 import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
 import kotlinx.coroutines.launch
@@ -159,6 +166,8 @@ fun NavGraphBuilder.writeRoute(
     ) {
         val viewModel: WriteViewModel = hiltViewModel()
         val uiState = viewModel.uiState
+        val pagerState = rememberPagerState()
+        val pageNumber = remember { derivedStateOf { pagerState.currentPage } }
 
         WriteScreen(
             onBack = onBack,
@@ -166,7 +175,23 @@ fun NavGraphBuilder.writeRoute(
             uiState = uiState,
             getData = {
                 viewModel.fetchSelectedDiary()
-            }
+            },
+            onTitleChanged = {
+                viewModel.setTitle(it)
+            },
+            onDescriptionChanged = {
+                viewModel.setDescription(it)
+            },
+            onSaveClicked = {
+                viewModel.insertDiary(diary = it.apply {
+                    mood = Mood.values()[pageNumber.value].name
+                },
+                    onSuccess = {
+                        onBack()
+                    })
+            },
+            moodName = { Mood.values()[pageNumber.value].name },
+            pagerState = pagerState
         )
     }
 }

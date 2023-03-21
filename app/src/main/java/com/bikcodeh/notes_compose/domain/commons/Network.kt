@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 
 @OptIn(ExperimentalCoroutinesApi::class)
-fun<T> makeSafeRequest(
+fun<T> makeSafeRequestFlow(
     action: () -> Flow<T>
 ): Flow<Result<T>> {
     App.Companion.create(BuildConfig.APP_ID).currentUser?.let {
@@ -22,4 +22,17 @@ fun<T> makeSafeRequest(
         }
     }
     return flow { emit(Result.Error(Failure.analyzeException(UserNotAuthenticatedException()))) }
+}
+
+suspend fun<T> makeSafeRequest(
+    action: suspend () -> T
+): Result<T> {
+    App.Companion.create(BuildConfig.APP_ID).currentUser?.let {
+        try {
+            return Result.Success(action())
+        }catch (e: Exception) {
+            return Result.Error(Failure.analyzeException(e))
+        }
+    }
+    return Result.Error(Failure.analyzeException(UserNotAuthenticatedException()))
 }
