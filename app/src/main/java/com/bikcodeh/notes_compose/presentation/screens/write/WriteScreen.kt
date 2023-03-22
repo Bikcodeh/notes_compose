@@ -11,6 +11,7 @@ import com.bikcodeh.notes_compose.domain.model.Diary
 import com.bikcodeh.notes_compose.domain.model.Mood
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
+import java.time.ZonedDateTime
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -24,6 +25,7 @@ fun WriteScreen(
     onTitleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onSaveClicked: (Diary) -> Unit,
+    onDateTimeUpdated: (ZonedDateTime) -> Unit
 ) {
     LaunchedEffect(key1 = uiState.selectedDiaryId) {
      getData()
@@ -37,7 +39,8 @@ fun WriteScreen(
                 onBack = onBack,
                 onDeleteConfirmed = onDeleteConfirmed,
                 selectedDiary = uiState.selectedDiary,
-                moodName = moodName
+                moodName = moodName,
+                onDateTimeUpdated = onDateTimeUpdated
             )
         },
         content = {

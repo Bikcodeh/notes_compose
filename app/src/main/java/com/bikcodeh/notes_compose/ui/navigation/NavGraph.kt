@@ -194,7 +194,8 @@ fun NavGraphBuilder.writeRoute(
                     })
             },
             moodName = { Mood.values()[pageNumber.value].name },
-            pagerState = pagerState
+            pagerState = pagerState,
+            onDateTimeUpdated = { time -> viewModel.updateDateTime(time)}
         )
     }
 }

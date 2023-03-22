@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -17,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,22 +32,35 @@ import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.domain.model.Diary
 import com.bikcodeh.notes_compose.presentation.components.DisplayAlertDialog
 import com.bikcodeh.notes_compose.presentation.util.toInstant
+import com.maxkeppeker.sheets.core.models.base.Header
+import com.maxkeppeker.sheets.core.models.base.rememberSheetState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import com.maxkeppeler.sheets.clock.ClockDialog
+import com.maxkeppeler.sheets.clock.models.ClockSelection
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Locale
-import java.util.Date
+import java.util.*
 
 @Composable
 fun WriteTopBar(
     selectedDiary: Diary?,
     moodName: () -> String,
     onBack: () -> Unit,
-    onDeleteConfirmed: () -> Unit
+    onDeleteConfirmed: () -> Unit,
+    onDateTimeUpdated: (ZonedDateTime) -> Unit
 ) {
-    val currentDate by remember { mutableStateOf(LocalDate.now()) }
-    val currentTime by remember { mutableStateOf(LocalTime.now()) }
+    var currentDate by remember { mutableStateOf(LocalDate.now()) }
+    var currentTime by remember { mutableStateOf(LocalTime.now()) }
+    val dateDialog = rememberSheetState()
+    val timeDialog = rememberSheetState()
+    var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
+    var dateTimeUpdated by remember { mutableStateOf(false) }
     val formattedDate = remember(key1 = currentDate) {
         DateTimeFormatter
             .ofPattern("dd MMM yyyy")
@@ -61,6 +76,12 @@ fun WriteTopBar(
             SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
                 .format(Date.from(selectedDiary.date.toInstant())).uppercase()
         } else "Unknown"
+    }
+
+    LaunchedEffect(key1 = selectedDiary) {
+        selectedDiary?.date?.let {
+            selectedDate = ZonedDateTime.ofInstant(it.toInstant(), ZoneId.systemDefault()).toLocalDate()
+        }
     }
     CenterAlignedTopAppBar(
         navigationIcon = {
@@ -83,7 +104,9 @@ fun WriteTopBar(
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = if (selectedDiary != null) selectedDiaryDateTime else "$formattedDate, $formattedTime",
+                    text = if (selectedDiary != null && dateTimeUpdated) "$formattedDate, $formattedTime"
+                    else if (selectedDiary != null) selectedDiaryDateTime
+                    else "$formattedDate, $formattedTime",
                     modifier = Modifier.fillMaxWidth(),
                     style = TextStyle(fontSize = MaterialTheme.typography.bodySmall.fontSize),
                     textAlign = TextAlign.Center
@@ -91,12 +114,28 @@ fun WriteTopBar(
             }
         },
         actions = {
-            IconButton(onClick = {}) {
-                Icon(
-                    imageVector = Icons.Default.DateRange,
-                    contentDescription = stringResource(id = R.string.date_description),
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
+            if (dateTimeUpdated) {
+                IconButton(onClick = {
+                    currentDate = LocalDate.now()
+                    currentTime = LocalTime.now()
+                    dateTimeUpdated = false
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = stringResource(id = R.string.close_description),
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            } else {
+                IconButton(onClick = {
+                    dateDialog.show()
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = stringResource(id = R.string.date_description),
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
             if (selectedDiary != null) {
                 DeleteDiaryAction(
@@ -104,6 +143,34 @@ fun WriteTopBar(
                     selectedDiary = selectedDiary
                 )
             }
+        }
+    )
+    CalendarDialog(
+        state = dateDialog,
+        selection = CalendarSelection.Date(
+            selectedDate = selectedDate
+        ) { localDate ->
+            currentDate = localDate
+            timeDialog.show()
+        },
+        config = CalendarConfig(monthSelection = true, yearSelection = true),
+        header = Header.Default(
+            stringResource(id = R.string.pick_date)
+        )
+    )
+
+    ClockDialog(
+        state = timeDialog,
+        selection = ClockSelection.HoursMinutes { hours, minutes ->
+            currentTime = LocalTime.of(hours, minutes)
+            dateTimeUpdated = true
+            onDateTimeUpdated(
+                ZonedDateTime.of(
+                    currentDate,
+                    currentTime,
+                    ZoneId.systemDefault()
+                )
+            )
         }
     )
 }

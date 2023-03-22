@@ -30,4 +30,6 @@
     <string name="tell_me_about_it_hint">Tell me about it</string>
     <string name="save">Save</string>
     <string name="required_fields">Fields cannot be empty</string>
+    <string name="close_description">Close</string>
+    <string name="pick_date">Pick a date</string>
 </resources>

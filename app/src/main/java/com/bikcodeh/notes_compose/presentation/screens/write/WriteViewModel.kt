@@ -12,12 +12,14 @@ import com.bikcodeh.notes_compose.domain.commons.fold
 import com.bikcodeh.notes_compose.domain.model.Diary
 import com.bikcodeh.notes_compose.domain.model.Mood
 import com.bikcodeh.notes_compose.presentation.util.getBsonObjectId
+import com.bikcodeh.notes_compose.presentation.util.toRealmInstant
 import com.bikcodeh.notes_compose.ui.navigation.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.ZonedDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -87,6 +89,10 @@ class WriteViewModel @Inject constructor(
         uiState = uiState.copy(description = description)
     }
 
+    fun updateDateTime(zonedDateTime: ZonedDateTime) {
+        uiState = uiState.copy(updatedDateTime = zonedDateTime.toInstant().toRealmInstant())
+    }
+
     fun upsertDiary(
         diary: Diary,
         onSuccess: () -> Unit,
@@ -107,12 +113,15 @@ class WriteViewModel @Inject constructor(
         onError: () -> Unit
     ) {
         viewModelScope.launch(dispatcher) {
-            MongoDB.addNewDiary(diary)
-                .fold(
-                    onSuccess = { execute(onSuccess) },
-                    onError = { execute(onError) },
-                    onLoading = {}
-                )
+            MongoDB.addNewDiary(diary = diary.apply {
+                if (uiState.updatedDateTime != null) {
+                    date = uiState.updatedDateTime!!
+                }
+            }).fold(
+                onSuccess = { execute(onSuccess) },
+                onError = { execute(onError) },
+                onLoading = {}
+            )
         }
     }
 
@@ -124,7 +133,11 @@ class WriteViewModel @Inject constructor(
         viewModelScope.launch(dispatcher) {
             MongoDB.updateDiary(diary.apply {
                 _id = org.mongodb.kbson.ObjectId(getBsonObjectId(uiState.selectedDiaryId))
-                date = uiState.selectedDiary!!.date
+                date = if (uiState.updatedDateTime != null) {
+                    uiState.updatedDateTime!!
+                } else {
+                    uiState.selectedDiary!!.date
+                }
             })
                 .fold(
                     onSuccess = { execute(onSuccess) },
