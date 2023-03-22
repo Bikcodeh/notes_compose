@@ -40,6 +40,7 @@ import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.clock.ClockDialog
 import com.maxkeppeler.sheets.clock.models.ClockSelection
 import java.text.SimpleDateFormat
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
@@ -80,7 +81,11 @@ fun WriteTopBar(
 
     LaunchedEffect(key1 = selectedDiary) {
         selectedDiary?.date?.let {
-            selectedDate = ZonedDateTime.ofInstant(it.toInstant(), ZoneId.systemDefault()).toLocalDate()
+            selectedDate =
+                ZonedDateTime.ofInstant(it.toInstant(), ZoneId.systemDefault()).toLocalDate()
+        } ?: run {
+            selectedDate =
+                ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()).toLocalDate()
         }
     }
     CenterAlignedTopAppBar(
@@ -119,6 +124,13 @@ fun WriteTopBar(
                     currentDate = LocalDate.now()
                     currentTime = LocalTime.now()
                     dateTimeUpdated = false
+                    onDateTimeUpdated(
+                        ZonedDateTime.of(
+                            currentDate,
+                            currentTime,
+                            ZoneId.systemDefault()
+                        )
+                    )
                 }) {
                     Icon(
                         imageVector = Icons.Default.Close,
