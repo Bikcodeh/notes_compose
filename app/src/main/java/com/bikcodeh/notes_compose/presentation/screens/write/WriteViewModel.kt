@@ -87,21 +87,56 @@ class WriteViewModel @Inject constructor(
         uiState = uiState.copy(description = description)
     }
 
-    fun insertDiary(
+    fun upsertDiary(
         diary: Diary,
-        onSuccess: () -> Unit
+        onSuccess: () -> Unit,
+        onError: () -> Unit
+    ) {
+        viewModelScope.launch(dispatcher) {
+            if (uiState.selectedDiaryId != null) {
+                updateDiary(diary = diary, onSuccess = onSuccess, onError = onError)
+            } else {
+                insertDiary(diary = diary, onSuccess = onSuccess, onError = onError)
+            }
+        }
+    }
+
+    private fun insertDiary(
+        diary: Diary,
+        onSuccess: () -> Unit,
+        onError: () -> Unit
     ) {
         viewModelScope.launch(dispatcher) {
             MongoDB.addNewDiary(diary)
                 .fold(
-                    onSuccess = {
-                        withContext(Dispatchers.Main){ onSuccess() }
-                    },
-                    onError = {
-
-                    },
+                    onSuccess = { execute(onSuccess) },
+                    onError = { execute(onError) },
                     onLoading = {}
                 )
+        }
+    }
+
+    private fun updateDiary(
+        diary: Diary,
+        onSuccess: () -> Unit,
+        onError: () -> Unit
+    ) {
+        viewModelScope.launch(dispatcher) {
+            MongoDB.updateDiary(diary.apply {
+                _id = org.mongodb.kbson.ObjectId(getBsonObjectId(uiState.selectedDiaryId))
+                date = uiState.selectedDiary!!.date
+            })
+                .fold(
+                    onSuccess = { execute(onSuccess) },
+                    onError = { execute(onError) },
+                    onLoading = {}
+                )
+        }
+    }
+
+    private suspend fun execute(action: () -> Unit) {
+        withContext(Dispatchers.Main) {
+            action()
         }
     }
 }

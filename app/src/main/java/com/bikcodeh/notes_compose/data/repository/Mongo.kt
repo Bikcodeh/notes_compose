@@ -4,6 +4,7 @@ import com.bikcodeh.notes_compose.BuildConfig
 import com.bikcodeh.notes_compose.domain.commons.Result
 import com.bikcodeh.notes_compose.domain.commons.makeSafeRequest
 import com.bikcodeh.notes_compose.domain.commons.makeSafeRequestFlow
+import com.bikcodeh.notes_compose.domain.exception.DiaryNotExistException
 import com.bikcodeh.notes_compose.domain.model.Diary
 import com.bikcodeh.notes_compose.domain.repository.Diaries
 import com.bikcodeh.notes_compose.domain.repository.MongoRepository
@@ -70,6 +71,24 @@ object MongoDB : MongoRepository {
             realm.write {
                 val addedDiary = copyToRealm(diary.apply { ownerId = user!!.id })
                 addedDiary
+            }
+        }
+    }
+
+    override suspend fun updateDiary(diary: Diary): Result<Diary> {
+        return makeSafeRequest {
+            realm.write {
+                val queriedDiary = query<Diary>(query = "_id == $0", diary._id).first().find()
+                if (queriedDiary != null) {
+                    queriedDiary.title = diary.title
+                    queriedDiary.description = diary.description
+                    queriedDiary.mood = diary.mood
+                    queriedDiary.images = diary.images
+                    queriedDiary.date = diary.date
+                    queriedDiary
+                } else {
+                    throw DiaryNotExistException()
+                }
             }
         }
     }
