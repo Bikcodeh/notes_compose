@@ -60,9 +60,10 @@ object MongoDB : MongoRepository {
         }
     }
 
-    override fun getSelectedDiary(diaryId: ObjectId): Flow<Result<Diary>> {
-        return makeSafeRequestFlow {
-            realm.query<Diary>(query = "_id == $0", diaryId).asFlow().map { it.list.first() }
+    override suspend fun getSelectedDiary(diaryId: ObjectId): Result<Diary> {
+        return makeSafeRequest {
+            realm.query<Diary>(query = "_id == $0", diaryId).first().find()
+                ?: throw DiaryNotExistException()
         }
     }
 
@@ -88,6 +89,20 @@ object MongoDB : MongoRepository {
                     queriedDiary
                 } else {
                     throw DiaryNotExistException()
+                }
+            }
+        }
+    }
+
+    override suspend fun deleteDiary(id: ObjectId): Result<Boolean> {
+        return makeSafeRequest {
+            realm.write {
+                val diary = query<Diary>(query = "_id == $0 AND ownerId == $1", id, user?.id).first().find()
+                if (diary != null) {
+                    delete(diary)
+                    true
+                } else {
+                 throw DiaryNotExistException()
                 }
             }
         }

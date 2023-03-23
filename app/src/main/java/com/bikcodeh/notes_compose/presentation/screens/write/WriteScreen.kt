@@ -25,10 +25,10 @@ fun WriteScreen(
     onTitleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onSaveClicked: (Diary) -> Unit,
-    onDateTimeUpdated: (ZonedDateTime) -> Unit
+    onDateTimeUpdated: (ZonedDateTime) -> Unit,
 ) {
     LaunchedEffect(key1 = uiState.selectedDiaryId) {
-     getData()
+        getData()
     }
     LaunchedEffect(key1 = uiState.mood) {
         pagerState.scrollToPage(Mood.valueOf(uiState.mood.name).ordinal)

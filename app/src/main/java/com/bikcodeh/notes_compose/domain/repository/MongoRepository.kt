@@ -10,7 +10,8 @@ typealias Diaries = Result<Map<LocalDate, List<Diary>>>
 interface MongoRepository {
     fun configureRealm()
     fun getAllDiaries(): Flow<Diaries>
-    fun getSelectedDiary(diaryId: ObjectId): Flow<Result<Diary>>
+    suspend fun getSelectedDiary(diaryId: ObjectId): Result<Diary>
     suspend fun addNewDiary(diary: Diary): Result<Diary>
     suspend fun updateDiary(diary: Diary): Result<Diary>
+    suspend fun deleteDiary(id: ObjectId): Result<Boolean>
 }

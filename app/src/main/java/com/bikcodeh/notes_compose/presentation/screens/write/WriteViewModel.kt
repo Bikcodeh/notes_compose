@@ -49,34 +49,32 @@ class WriteViewModel @Inject constructor(
             viewModelScope.launch {
                 MongoDB.getSelectedDiary(
                     diaryId = org.mongodb.kbson.ObjectId(getBsonObjectId(uiState.selectedDiaryId))
-                ).collect { result ->
-                    result.fold(
-                        onSuccess = {
-                            uiState = uiState.copy(
-                                title = it.title,
-                                description = it.description,
-                                mood = Mood.valueOf(it.mood),
-                                isLoading = false,
-                                selectedDiaryId = it._id.toString(),
-                                error = false,
-                                selectedDiary = it
-                            )
-                        },
-                        onError = {
-                            uiState = uiState.copy(
-                                title = "",
-                                description = "",
-                                mood = Mood.Neutral,
-                                isLoading = false,
-                                error = true,
-                                selectedDiaryId = null,
-                                selectedDiary = null
-                            )
+                ).fold(
+                    onSuccess = {
+                        uiState = uiState.copy(
+                            title = it.title,
+                            description = it.description,
+                            mood = Mood.valueOf(it.mood),
+                            isLoading = false,
+                            selectedDiaryId = it._id.toString(),
+                            error = false,
+                            selectedDiary = it
+                        )
+                    },
+                    onError = {
+                        uiState = uiState.copy(
+                            title = "",
+                            description = "",
+                            mood = Mood.Neutral,
+                            isLoading = false,
+                            error = true,
+                            selectedDiaryId = null,
+                            selectedDiary = null
+                        )
 
-                        },
-                        onLoading = {}
-                    )
-                }
+                    },
+                    onLoading = {}
+                )
             }
         }
     }
@@ -144,6 +142,25 @@ class WriteViewModel @Inject constructor(
                     onError = { execute(onError) },
                     onLoading = {}
                 )
+        }
+    }
+
+    fun deleteDiary(
+        onSuccess: () -> Unit,
+        onError: () -> Unit
+    ) {
+        viewModelScope.launch(dispatcher) {
+            if (uiState.selectedDiaryId != null) {
+                MongoDB.deleteDiary(id = org.mongodb.kbson.ObjectId(getBsonObjectId(uiState.selectedDiaryId)))
+                    .fold(
+                        onSuccess = {
+                            uiState = uiState.copy(selectedDiaryId = null, selectedDiary = null)
+                            execute(onSuccess)
+                        },
+                        onError = { execute(onError) },
+                        onLoading = {}
+                    )
+            }
         }
     }
 

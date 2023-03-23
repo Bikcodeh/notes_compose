@@ -32,4 +32,6 @@
     <string name="required_fields">Fields cannot be empty</string>
     <string name="close_description">Close</string>
     <string name="pick_date">Pick a date</string>
+    <string name="delete_success">Diary delete successfully</string>
+    <string name="delete_error">An error ocurred while trying to delete, please try again later</string>
 </resources>

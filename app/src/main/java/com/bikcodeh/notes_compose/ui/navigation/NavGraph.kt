@@ -2,6 +2,7 @@
 
 package com.bikcodeh.notes_compose.ui.navigation
 
+import android.widget.Toast
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDrawerState
@@ -168,10 +169,29 @@ fun NavGraphBuilder.writeRoute(
         val uiState = viewModel.uiState
         val pagerState = rememberPagerState()
         val pageNumber = remember { derivedStateOf { pagerState.currentPage } }
+        val context = LocalContext.current
 
         WriteScreen(
             onBack = onBack,
-            onDeleteConfirmed = {},
+            onDeleteConfirmed = {
+                viewModel.deleteDiary(
+                    onError = {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.delete_error),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    },
+                    onSuccess = {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.delete_success),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        onBack()
+                    }
+                )
+            },
             uiState = uiState,
             getData = {
                 viewModel.fetchSelectedDiary()
@@ -195,7 +215,7 @@ fun NavGraphBuilder.writeRoute(
             },
             moodName = { Mood.values()[pageNumber.value].name },
             pagerState = pagerState,
-            onDateTimeUpdated = { time -> viewModel.updateDateTime(time)}
+            onDateTimeUpdated = { time -> viewModel.updateDateTime(time) }
         )
     }
 }
