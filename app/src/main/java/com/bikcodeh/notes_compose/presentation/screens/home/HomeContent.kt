@@ -14,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.domain.model.Diary
@@ -33,12 +32,8 @@ fun HomeContent(
         LazyColumn(
             modifier = Modifier
                 .padding(horizontal = 24.dp)
-                .padding(
-                    top = paddingValues.calculateTopPadding(),
-                    bottom = paddingValues.calculateBottomPadding(),
-                    start = paddingValues.calculateRightPadding(LayoutDirection.Rtl),
-                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr)
-                )
+                .navigationBarsPadding()
+                .padding(top = paddingValues.calculateTopPadding())
         ) {
             diaries.forEach { (localDate, diaries) ->
                 stickyHeader(key = localDate) {
