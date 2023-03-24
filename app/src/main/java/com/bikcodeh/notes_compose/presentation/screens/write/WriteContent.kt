@@ -16,9 +16,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -30,6 +34,7 @@ import com.bikcodeh.notes_compose.domain.model.Mood
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
+import kotlinx.coroutines.launch
 
 @Composable
 fun WriteContent(
@@ -43,7 +48,12 @@ fun WriteContent(
     onSaveClicked: (Diary) -> Unit,
 ) {
     val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+    LaunchedEffect(key1 = scrollState.maxValue) {
+        scrollState.scrollTo(scrollState.maxValue)
+    }
     Column(
         modifier = Modifier
             .imePadding()
@@ -96,6 +106,8 @@ fun WriteContent(
                 ),
                 keyboardActions = KeyboardActions(
                     onNext = {
+                        coroutineScope.launch { scrollState.scrollTo(Int.MAX_VALUE) }
+                        focusManager.moveFocus(FocusDirection.Next)
                     },
                 ),
                 maxLines = 1,
@@ -117,8 +129,7 @@ fun WriteContent(
                     imeAction = ImeAction.Next
                 ),
                 keyboardActions = KeyboardActions(
-                    onNext = {
-                    },
+                    onNext = { focusManager.clearFocus() },
                 )
             )
         }
