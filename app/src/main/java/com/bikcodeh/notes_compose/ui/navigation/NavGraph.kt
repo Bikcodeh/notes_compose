@@ -22,9 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.data.repository.MongoDB
-import com.bikcodeh.notes_compose.domain.model.GalleryImage
 import com.bikcodeh.notes_compose.domain.model.Mood
-import com.bikcodeh.notes_compose.domain.model.rememberGalleryState
 import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationScreen
 import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationViewModel
 import com.bikcodeh.notes_compose.presentation.screens.home.HomeScreen
@@ -173,10 +171,10 @@ fun NavGraphBuilder.writeRoute(
     ) {
         val viewModel: WriteViewModel = hiltViewModel()
         val uiState = viewModel.uiState
+        val galleryState = viewModel.galleryState
         val pagerState = rememberPagerState()
         val pageNumber = remember { derivedStateOf { pagerState.currentPage } }
         val context = LocalContext.current
-        val galleryState = rememberGalleryState()
 
         WriteScreen(
             galleryState = galleryState,
@@ -225,7 +223,8 @@ fun NavGraphBuilder.writeRoute(
             pagerState = pagerState,
             onDateTimeUpdated = { time -> viewModel.updateDateTime(time) },
             onImageSelect = {
-                galleryState.addImage(GalleryImage(image = it))
+                val type = context.contentResolver.getType(it)?.split("/")?.last() ?: "jpg"
+                viewModel.addImage(image = it, imageType = type)
             }
         )
     }

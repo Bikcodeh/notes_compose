@@ -1,5 +1,6 @@
 package com.bikcodeh.notes_compose.presentation.screens.write
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,10 +11,13 @@ import com.bikcodeh.notes_compose.data.repository.MongoDB
 import com.bikcodeh.notes_compose.di.IoDispatcher
 import com.bikcodeh.notes_compose.domain.commons.fold
 import com.bikcodeh.notes_compose.domain.model.Diary
+import com.bikcodeh.notes_compose.domain.model.GalleryImage
+import com.bikcodeh.notes_compose.domain.model.GalleryState
 import com.bikcodeh.notes_compose.domain.model.Mood
 import com.bikcodeh.notes_compose.presentation.util.getBsonObjectId
 import com.bikcodeh.notes_compose.presentation.util.toRealmInstant
 import com.bikcodeh.notes_compose.ui.navigation.Screen
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +32,7 @@ class WriteViewModel @Inject constructor(
     @IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
+    val galleryState = GalleryState()
     var uiState by mutableStateOf(UiState())
         private set
 
@@ -162,6 +167,17 @@ class WriteViewModel @Inject constructor(
                     )
             }
         }
+    }
+
+    fun addImage(image: Uri, imageType: String) {
+        val remoteImagePath = "images/${FirebaseAuth.getInstance().currentUser?.uid}/" +
+                "${image.lastPathSegment}-${System.currentTimeMillis()}.$imageType"
+        galleryState.addImage(
+            GalleryImage(
+                image = image,
+                remoteImagePath = remoteImagePath
+            )
+        )
     }
 
     private suspend fun execute(action: () -> Unit) {
