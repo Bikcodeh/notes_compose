@@ -1,12 +1,24 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.bikcodeh.notes_compose.presentation.components
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerBasedShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
@@ -17,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -26,6 +39,9 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bikcodeh.notes_compose.R
+import com.bikcodeh.notes_compose.domain.model.GalleryImage
+import com.bikcodeh.notes_compose.domain.model.GalleryState
+import com.bikcodeh.notes_compose.ui.theme.Elevation
 import kotlin.math.max
 
 @Composable
@@ -69,6 +85,98 @@ fun Gallery(
                     remainingImages = remainingImages.value
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun GalleryUploader(
+    modifier: Modifier = Modifier,
+    galleryState: GalleryState,
+    imageSize: Dp = 60.dp,
+    imageShape: CornerBasedShape = Shapes().medium,
+    onAddClicked: () -> Unit,
+    spaceBetween: Dp = 12.dp,
+    onImageSelect: (Uri) -> Unit,
+    onImageClicked: (GalleryImage) -> Unit
+) {
+    val multiplePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = 8),
+    ) { images ->
+        images.forEach {
+            onImageSelect(it)
+        }
+    }
+
+    BoxWithConstraints(modifier = modifier) {
+        val numberOfVisibleImages =
+            remember {
+                derivedStateOf {
+                    max(
+                        a = 0,
+                        b = this.maxWidth.div(spaceBetween + imageSize).toInt().minus(2)
+                    )
+                }
+            }
+        val remainingImages = remember {
+            derivedStateOf { galleryState.images.size - numberOfVisibleImages.value }
+        }
+        Row() {
+            AddImageButton(imageSize = imageSize, imageShape = imageShape,
+                onClick = {
+                    multiplePicker.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                    onAddClicked()
+                })
+            Spacer(modifier = Modifier.width(spaceBetween))
+            galleryState.images.take(numberOfVisibleImages.value).forEach { galleryImage ->
+                AsyncImage(
+                    modifier = Modifier
+                        .clickable { onImageClicked(galleryImage) }
+                        .clip(imageShape)
+                        .size(imageSize),
+                    model = ImageRequest.Builder(LocalContext.current).data(galleryImage.image)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = stringResource(id = R.string.gallery_image_description),
+                    contentScale = ContentScale.Crop
+                )
+                Spacer(modifier = Modifier.width(spaceBetween))
+            }
+            if (remainingImages.value > 0) {
+                LastImageOverlay(
+                    imageSize = imageSize,
+                    imageShape = imageShape,
+                    remainingImages = remainingImages.value
+                )
+            }
+        }
+    }
+}
+
+@ExperimentalMaterial3Api
+@Composable
+fun AddImageButton(
+    imageSize: Dp,
+    imageShape: CornerBasedShape,
+    onClick: () -> Unit
+) {
+    Surface(
+        modifier = Modifier
+            .size(imageSize)
+            .clip(shape = imageShape),
+        onClick = onClick,
+        tonalElevation = Elevation.Level1
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = stringResource(id = R.string.add_icon_description),
+            )
         }
     }
 }

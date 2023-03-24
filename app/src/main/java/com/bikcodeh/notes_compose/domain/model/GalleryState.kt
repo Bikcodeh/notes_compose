@@ -15,7 +15,9 @@ class GalleryState {
     val imagesToBeDeleted = mutableStateListOf<GalleryImage>()
 
     fun addImage(galleryImage: GalleryImage) {
-        images.add(galleryImage)
+        if (!images.contains(galleryImage)) {
+            images.add(galleryImage)
+        }
     }
 
     fun removeImage(galleryImage: GalleryImage) {

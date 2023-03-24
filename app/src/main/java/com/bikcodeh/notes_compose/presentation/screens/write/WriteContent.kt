@@ -2,6 +2,7 @@
 
 package com.bikcodeh.notes_compose.presentation.screens.write
 
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -30,7 +31,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.domain.model.Diary
+import com.bikcodeh.notes_compose.domain.model.GalleryState
 import com.bikcodeh.notes_compose.domain.model.Mood
+import com.bikcodeh.notes_compose.presentation.components.GalleryUploader
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -38,6 +41,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun WriteContent(
+    galleryState: GalleryState,
     uiState: UiState,
     paddingValues: PaddingValues,
     pagerState: PagerState,
@@ -46,6 +50,7 @@ fun WriteContent(
     description: String,
     onDescriptionChanged: (String) -> Unit,
     onSaveClicked: (Diary) -> Unit,
+    onImageSelect: (Uri) -> Unit
 ) {
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
@@ -137,6 +142,13 @@ fun WriteContent(
             modifier = Modifier,
             verticalArrangement = Arrangement.Bottom
         ) {
+            Spacer(modifier = Modifier.height(12.dp))
+            GalleryUploader(
+                galleryState = galleryState,
+                onAddClicked = {},
+                onImageSelect = onImageSelect,
+                onImageClicked = {}
+            )
             Spacer(modifier = Modifier.height(12.dp))
             Button(
                 onClick = {

@@ -34,4 +34,5 @@
     <string name="pick_date">Pick a date</string>
     <string name="delete_success">Diary delete successfully</string>
     <string name="delete_error">An error ocurred while trying to delete, please try again later</string>
+    <string name="add_icon_description">Add icon</string>
 </resources>
