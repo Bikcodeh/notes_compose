@@ -216,15 +216,19 @@ fun NavGraphBuilder.writeRoute(
                         onBack()
                     },
                     onError = {
-
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.error_message),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     })
             },
             moodName = { Mood.values()[pageNumber.value].name },
             pagerState = pagerState,
             onDateTimeUpdated = { time -> viewModel.updateDateTime(time) },
-            onImageSelect = {
-                val type = context.contentResolver.getType(it)?.split("/")?.last() ?: "jpg"
-                viewModel.addImage(image = it, imageType = type)
+            onImageSelect = { uri ->
+                val type = context.contentResolver.getType(uri)?.split("/")?.last() ?: "jpg"
+                viewModel.addImage(image = uri, imageType = type)
             }
         )
     }

@@ -125,7 +125,9 @@ fun GalleryUploader(
             AddImageButton(imageSize = imageSize, imageShape = imageShape,
                 onClick = {
                     multiplePicker.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        PickVisualMediaRequest(
+                            ActivityResultContracts.PickVisualMedia.ImageOnly
+                        )
                     )
                     onAddClicked()
                 })

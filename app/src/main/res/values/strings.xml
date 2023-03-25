@@ -21,6 +21,7 @@
     <string name="empty_diary">Empty Diary</string>
     <string name="write_something">Write something</string>
     <string name="error_fetching_data">An error occurred fetching the data</string>
+    <string name="error_message">An error occurred while executing the operation, try again later</string>
     <string name="try_again">Please try again later</string>
     <string name="back_description">Go back</string>
     <string name="delete">Delete</string>
@@ -33,6 +34,6 @@
     <string name="close_description">Close</string>
     <string name="pick_date">Pick a date</string>
     <string name="delete_success">Diary delete successfully</string>
-    <string name="delete_error">An error ocurred while trying to delete, please try again later</string>
+    <string name="delete_error">An error occurred while trying to delete, please try again later</string>
     <string name="add_icon_description">Add icon</string>
 </resources>

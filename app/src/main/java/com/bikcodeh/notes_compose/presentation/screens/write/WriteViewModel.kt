@@ -18,6 +18,7 @@ import com.bikcodeh.notes_compose.presentation.util.getBsonObjectId
 import com.bikcodeh.notes_compose.presentation.util.toRealmInstant
 import com.bikcodeh.notes_compose.ui.navigation.Screen
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -121,7 +122,10 @@ class WriteViewModel @Inject constructor(
                     date = uiState.updatedDateTime!!
                 }
             }).fold(
-                onSuccess = { execute(onSuccess) },
+                onSuccess = {
+                    uploadImagesToFirebase()
+                    execute(onSuccess)
+                },
                 onError = { execute(onError) },
                 onLoading = {}
             )
@@ -143,7 +147,10 @@ class WriteViewModel @Inject constructor(
                 }
             })
                 .fold(
-                    onSuccess = { execute(onSuccess) },
+                    onSuccess = {
+                        uploadImagesToFirebase()
+                        execute(onSuccess)
+                    },
                     onError = { execute(onError) },
                     onLoading = {}
                 )
@@ -178,6 +185,28 @@ class WriteViewModel @Inject constructor(
                 remoteImagePath = remoteImagePath
             )
         )
+    }
+
+    private fun uploadImagesToFirebase() {
+        val storage = FirebaseStorage.getInstance().reference
+        galleryState.images.forEach { galleryImage ->
+            val imagePath = storage.child(galleryImage.remoteImagePath)
+            imagePath.putFile(galleryImage.image)
+                /*.addOnProgressListener {
+                    val sessionUri = it.uploadSessionUri
+                    if (sessionUri != null) {
+                        viewModelScope.launch(Dispatchers.IO) {
+                            imageToUploadDao.addImageToUpload(
+                                ImageToUpload(
+                                    remoteImagePath = galleryImage.remoteImagePath,
+                                    imageUri = galleryImage.image.toString(),
+                                    sessionUri = sessionUri.toString()
+                                )
+                            )
+                        }
+                    }
+                }*/
+        }
     }
 
     private suspend fun execute(action: () -> Unit) {
