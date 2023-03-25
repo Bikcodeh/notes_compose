@@ -7,6 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bikcodeh.notes_compose.data.local.database.dao.ImagesToUploadDao
+import com.bikcodeh.notes_compose.data.local.database.entity.ImageToUpload
 import com.bikcodeh.notes_compose.data.repository.MongoDB
 import com.bikcodeh.notes_compose.di.IoDispatcher
 import com.bikcodeh.notes_compose.domain.commons.fold
@@ -32,6 +34,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WriteViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
+    private val uploadDao: ImagesToUploadDao,
     @IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
@@ -207,6 +210,19 @@ class WriteViewModel @Inject constructor(
         galleryState.images.forEach { galleryImage ->
             val imagePath = storage.child(galleryImage.remoteImagePath)
             imagePath.putFile(galleryImage.image)
+                .addOnProgressListener {
+                    it.uploadSessionUri?.let { sessionUri ->
+                        viewModelScope.launch(dispatcher) {
+                            uploadDao.addImageToUpload(
+                                ImageToUpload(
+                                    remoteImagePath = galleryImage.remoteImagePath,
+                                    imageUri = galleryImage.image.toString(),
+                                    sessionUri = sessionUri.toString()
+                                )
+                            )
+                        }
+                    }
+                }
         }
     }
 

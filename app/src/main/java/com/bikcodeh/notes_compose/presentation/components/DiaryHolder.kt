@@ -132,8 +132,8 @@ fun DiaryHolder(
                         })
                 }
                 AnimatedVisibility(
-                    visible = galleryOpened, enter =
-                    fadeIn() + expandVertically(
+                    visible = galleryOpened && !galleryLoading,
+                    enter = fadeIn() + expandVertically(
                         animationSpec = spring(
                             dampingRatio = Spring.DampingRatioMediumBouncy,
                             stiffness = Spring.StiffnessLow

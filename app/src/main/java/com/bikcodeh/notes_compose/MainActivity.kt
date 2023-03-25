@@ -3,10 +3,12 @@ package com.bikcodeh.notes_compose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
+import com.bikcodeh.notes_compose.presentation.screens.main.MainViewModel
 import com.bikcodeh.notes_compose.ui.navigation.Screen
 import com.bikcodeh.notes_compose.ui.navigation.SetupNavGraph
 import com.bikcodeh.notes_compose.ui.theme.Notes_ComposeTheme
@@ -16,6 +18,8 @@ import io.realm.kotlin.mongodb.App
 @ExperimentalMaterial3Api
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val mainViewModel: MainViewModel by viewModels()
 
     var keepSplashOpened = true
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +38,7 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+        mainViewModel.cleanUpImages()
     }
 }
 
