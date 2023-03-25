@@ -31,6 +31,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.domain.model.Diary
+import com.bikcodeh.notes_compose.domain.model.GalleryImage
 import com.bikcodeh.notes_compose.domain.model.GalleryState
 import com.bikcodeh.notes_compose.domain.model.Mood
 import com.bikcodeh.notes_compose.presentation.components.GalleryUploader
@@ -51,7 +52,8 @@ fun WriteContent(
     description: String,
     onDescriptionChanged: (String) -> Unit,
     onSaveClicked: (Diary) -> Unit,
-    onImageSelect: (Uri) -> Unit
+    onImageSelect: (Uri) -> Unit,
+    onImageClicked: (GalleryImage) -> Unit
 ) {
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
@@ -148,7 +150,7 @@ fun WriteContent(
                 galleryState = galleryState,
                 onAddClicked = { focusManager.clearFocus() },
                 onImageSelect = onImageSelect,
-                onImageClicked = {}
+                onImageClicked = onImageClicked
             )
             Spacer(modifier = Modifier.height(12.dp))
             Button(

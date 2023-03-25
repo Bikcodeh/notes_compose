@@ -8,7 +8,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.bikcodeh.notes_compose.domain.model.Diary
+import com.bikcodeh.notes_compose.domain.model.GalleryImage
 import com.bikcodeh.notes_compose.domain.model.GalleryState
 import com.bikcodeh.notes_compose.domain.model.Mood
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -37,6 +42,7 @@ fun WriteScreen(
     LaunchedEffect(key1 = uiState.mood) {
         pagerState.scrollToPage(Mood.valueOf(uiState.mood.name).ordinal)
     }
+    var selectedGalleryImage by remember { mutableStateOf<GalleryImage?>(null) }
     Scaffold(
         topBar = {
             WriteTopBar(
@@ -50,14 +56,18 @@ fun WriteScreen(
         content = {
             WriteContent(
                 galleryState = galleryState,
-                paddingValues = it, pagerState = pagerState,
+                paddingValues = it,
+                pagerState = pagerState,
                 title = uiState.title,
                 onTitleChanged = onTitleChanged,
                 description = uiState.description,
                 onDescriptionChanged = onDescriptionChanged,
                 uiState = uiState,
                 onSaveClicked = onSaveClicked,
-                onImageSelect = onImageSelect
+                onImageSelect = onImageSelect,
+                onImageClicked = {  galleryImage ->
+                    selectedGalleryImage = galleryImage
+                }
             )
         }
     )
