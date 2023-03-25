@@ -36,4 +36,5 @@
     <string name="delete_success">Diary delete successfully</string>
     <string name="delete_error">An error occurred while trying to delete, please try again later</string>
     <string name="add_icon_description">Add icon</string>
+    <string name="images_downloading">Images not uploaded yet Wait a little bit, or try uploading again.</string>
 </resources>

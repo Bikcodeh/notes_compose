@@ -14,6 +14,8 @@ import com.bikcodeh.notes_compose.domain.model.Diary
 import com.bikcodeh.notes_compose.domain.model.GalleryImage
 import com.bikcodeh.notes_compose.domain.model.GalleryState
 import com.bikcodeh.notes_compose.domain.model.Mood
+import com.bikcodeh.notes_compose.presentation.util.extractImagePath
+import com.bikcodeh.notes_compose.presentation.util.fetchImagesFromFirebase
 import com.bikcodeh.notes_compose.presentation.util.getBsonObjectId
 import com.bikcodeh.notes_compose.presentation.util.toRealmInstant
 import com.bikcodeh.notes_compose.ui.navigation.Screen
@@ -65,6 +67,19 @@ class WriteViewModel @Inject constructor(
                             selectedDiaryId = it._id.toString(),
                             error = false,
                             selectedDiary = it
+                        )
+                        fetchImagesFromFirebase(
+                            remoteImagePaths = it.images,
+                            onImageDownload = { uri ->
+                                galleryState.addImage(
+                                    GalleryImage(
+                                        image = uri,
+                                        remoteImagePath = extractImagePath(
+                                            fullImageUrl = uri.toString()
+                                        )
+                                    )
+                                )
+                            }
                         )
                     },
                     onError = {
@@ -192,20 +207,6 @@ class WriteViewModel @Inject constructor(
         galleryState.images.forEach { galleryImage ->
             val imagePath = storage.child(galleryImage.remoteImagePath)
             imagePath.putFile(galleryImage.image)
-                /*.addOnProgressListener {
-                    val sessionUri = it.uploadSessionUri
-                    if (sessionUri != null) {
-                        viewModelScope.launch(Dispatchers.IO) {
-                            imageToUploadDao.addImageToUpload(
-                                ImageToUpload(
-                                    remoteImagePath = galleryImage.remoteImagePath,
-                                    imageUri = galleryImage.image.toString(),
-                                    sessionUri = sessionUri.toString()
-                                )
-                            )
-                        }
-                    }
-                }*/
         }
     }
 
