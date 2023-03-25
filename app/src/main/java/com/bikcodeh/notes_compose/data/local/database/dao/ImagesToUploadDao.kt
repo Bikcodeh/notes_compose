@@ -9,12 +9,12 @@ import com.bikcodeh.notes_compose.data.local.database.entity.ImageToUpload
 @Dao
 interface ImagesToUploadDao {
 
-    @Query("SELECT * FROM image_to_upload_table ORDER BY id ASC")
+    @Query("SELECT * FROM image_to_upload ORDER BY id ASC")
     suspend fun getAllImages(): List<ImageToUpload>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addImageToUpload(imageToUpload: ImageToUpload)
 
-    @Query("DELETE FROM image_to_upload_table WHERE id=:imageId")
+    @Query("DELETE FROM image_to_upload_ WHERE id=:imageId")
     suspend fun cleanupImage(imageId: Int)
 }
