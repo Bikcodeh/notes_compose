@@ -107,4 +107,14 @@ object MongoDB : MongoRepository {
             }
         }
     }
+
+    override suspend fun deleteAllDiaries(): Result<Boolean> {
+        return makeSafeRequest {
+            realm.write {
+                val diaries = this.query<Diary>("ownerId == $0", user?.id).find()
+                delete(diaries)
+                true
+            }
+        }
+    }
 }

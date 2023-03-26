@@ -2,7 +2,6 @@
 
 package com.bikcodeh.notes_compose.ui.navigation
 
-import android.widget.Toast
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDrawerState
@@ -29,6 +28,7 @@ import com.bikcodeh.notes_compose.presentation.screens.home.HomeScreen
 import com.bikcodeh.notes_compose.presentation.screens.home.HomeViewModel
 import com.bikcodeh.notes_compose.presentation.screens.write.WriteScreen
 import com.bikcodeh.notes_compose.presentation.screens.write.WriteViewModel
+import com.bikcodeh.notes_compose.presentation.util.extension.toast
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import com.stevdzasan.messagebar.rememberMessageBarState
@@ -135,6 +135,7 @@ fun NavGraphBuilder.homeRoute(
         val authViewModel: AuthenticationViewModel = hiltViewModel()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         val scope = rememberCoroutineScope()
+        val context = LocalContext.current
 
         LaunchedEffect(key1 = diaries) {
             if (diaries !is com.bikcodeh.notes_compose.domain.commons.Result.Loading) {
@@ -150,7 +151,19 @@ fun NavGraphBuilder.homeRoute(
             navigateToWriteWithArgs = navigateToWriteWithArgs,
             drawerState = drawerState,
             navigateToAuth = navigateToAuth,
-            onLogOut = { authViewModel.logOut() }
+            onLogOut = { authViewModel.logOut() },
+            deleteAlliDiaries = {
+                viewModel.deleteAllDiaries(
+                    onSuccess = {
+                        context.toast(R.string.all_diaries_deleted)
+                        scope.launch { drawerState.close() }
+                    },
+                    onError = { messageResId ->
+                        context.toast(messageResId)
+                        scope.launch { drawerState.close() }
+                    }
+                )
+            }
         )
         LaunchedEffect(key1 = Unit) {
             MongoDB.configureRealm()
@@ -182,18 +195,10 @@ fun NavGraphBuilder.writeRoute(
             onDeleteConfirmed = {
                 viewModel.deleteDiary(
                     onError = {
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.delete_error),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        context.toast(R.string.delete_error)
                     },
                     onSuccess = {
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.delete_success),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        context.toast(R.string.delete_success)
                         onBack()
                     }
                 )
@@ -216,11 +221,7 @@ fun NavGraphBuilder.writeRoute(
                         onBack()
                     },
                     onError = {
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.error_message),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        context.toast(R.string.error_message)
                     })
             },
             moodName = { Mood.values()[pageNumber.value].name },

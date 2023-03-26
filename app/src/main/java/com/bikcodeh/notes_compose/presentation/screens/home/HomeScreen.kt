@@ -7,6 +7,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -36,15 +37,19 @@ fun HomeScreen(
     navigateToWriteScreen: () -> Unit,
     navigateToWriteWithArgs: (String) -> Unit,
     navigateToAuth: () -> Unit,
-    onLogOut: () -> Unit
-) {
+    onLogOut: () -> Unit,
+    deleteAlliDiaries: () -> Unit
+
+    ) {
     var paddingValues by remember { mutableStateOf(PaddingValues()) }
     var dialogOpened by remember { mutableStateOf(false) }
+    var deleteAllDialogOpened by remember { mutableStateOf(false) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     NavigationDrawerNotes(
         drawerState = drawerState,
-        onSignOutClicked = { dialogOpened = true }
+        onSignOutClicked = { dialogOpened = true },
+        onDeleteAllClicked = { deleteAllDialogOpened = true }
     ) {
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -108,12 +113,20 @@ fun HomeScreen(
             dialogOpened = false
         }
     )
+    DisplayAlertDialog(
+        title = stringResource(id = R.string.delete_all_diaries),
+        message = stringResource(id = R.string.delete_all_diaries_confirmation),
+        dialogOpened = deleteAllDialogOpened,
+        onDialogClosed = { deleteAllDialogOpened = false },
+        onYesClicked = deleteAlliDiaries
+    )
 }
 
 @Composable
 fun NavigationDrawerNotes(
     drawerState: DrawerState,
     onSignOutClicked: () -> Unit,
+    onDeleteAllClicked: () -> Unit,
     content: @Composable () -> Unit
 ) {
     ModalNavigationDrawer(
@@ -150,6 +163,25 @@ fun NavigationDrawerNotes(
                     },
                     selected = false,
                     onClick = onSignOutClicked
+                )
+                NavigationDrawerItem(
+                    label = {
+                        Row(modifier = Modifier.padding(horizontal = 12.dp)) {
+                            Image(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = stringResource(
+                                    id = R.string.delete
+                                )
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Text(
+                                text = stringResource(id = R.string.delete_all_diaries),
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    },
+                    selected = false,
+                    onClick = onDeleteAllClicked
                 )
             })
         },

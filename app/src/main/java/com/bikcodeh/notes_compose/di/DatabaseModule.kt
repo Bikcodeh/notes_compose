@@ -5,6 +5,8 @@ import androidx.room.Room
 import com.bikcodeh.notes_compose.data.local.database.ImagesDatabase
 import com.bikcodeh.notes_compose.data.local.database.dao.ImageToDeleteDao
 import com.bikcodeh.notes_compose.data.local.database.dao.ImagesToUploadDao
+import com.bikcodeh.notes_compose.presentation.util.connectivity.ConnectivityObserver
+import com.bikcodeh.notes_compose.presentation.util.connectivity.NetworkConnectivityObserver
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,4 +35,10 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun providesDeleteImageDao(database: ImagesDatabase): ImageToDeleteDao = database.imageToDeleteDao()
+
+    @Singleton
+    @Provides
+    fun provideNetworkConnectivityObserver(
+        @ApplicationContext context: Context
+    ): ConnectivityObserver = NetworkConnectivityObserver(context = context)
 }

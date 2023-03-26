@@ -2,8 +2,10 @@ package com.bikcodeh.notes_compose.presentation.util
 
 import android.net.Uri
 import androidx.core.net.toUri
+import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.data.local.database.entity.ImageToDelete
 import com.bikcodeh.notes_compose.data.local.database.entity.ImageToUpload
+import com.bikcodeh.notes_compose.domain.commons.Failure
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -90,4 +92,13 @@ fun extractImagePath(fullImageUrl: String): String {
     val chunks = fullImageUrl.split("%2F")
     val imageName = chunks[2].split("?").first()
     return "images/${Firebase.auth.currentUser?.uid}/$imageName"
+}
+
+fun handleError(failure: Failure): Int {
+    return when(failure) {
+        is Failure.NetworkConnection -> R.string.error_connection
+        is Failure.ParsingException -> R.string.error_parsing
+        is Failure.ServerError -> R.string.error_server
+        is Failure.UnknownException -> R.string.error_unknown
+    }
 }

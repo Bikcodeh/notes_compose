@@ -37,4 +37,11 @@
     <string name="delete_error">An error occurred while trying to delete, please try again later</string>
     <string name="add_icon_description">Add icon</string>
     <string name="images_downloading">Images not uploaded yet Wait a little bit, or try uploading again.</string>
+    <string name="delete_all_diaries">Delete all diaries</string>
+    <string name="delete_all_diaries_confirmation">Are you sure you want to permanently delete all your diaries?</string>
+    <string name="error_connection">Ups! No internet connection, please try again later</string>
+    <string name="error_parsing">Ups! An error happened parsing the data</string>
+    <string name="error_server">Ups! An internal error server occurred, please try again later.</string>
+    <string name="error_unknown">Ups! An unexpected error happened, please try again later.</string>
+    <string name="all_diaries_deleted">All diaries deleted successfully</string>
 </resources>

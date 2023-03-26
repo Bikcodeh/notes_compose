@@ -1,7 +1,6 @@
 package com.bikcodeh.notes_compose.presentation.components
 
 import android.net.Uri
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
@@ -48,6 +47,7 @@ import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.domain.model.Diary
 import com.bikcodeh.notes_compose.domain.model.Mood
 import com.bikcodeh.notes_compose.domain.model.getMoodByName
+import com.bikcodeh.notes_compose.presentation.util.extension.toast
 import com.bikcodeh.notes_compose.presentation.util.fetchImagesFromFirebase
 import com.bikcodeh.notes_compose.presentation.util.toInstant
 import com.bikcodeh.notes_compose.ui.theme.Elevation
@@ -77,11 +77,7 @@ fun DiaryHolder(
                     downloadedImages.add(image)
                 },
                 onImageDownloadFailed = {
-                    Toast.makeText(
-                        context,
-                        context.getString(R.string.images_downloading),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    context.toast(R.string.images_downloading)
                     galleryLoading = false
                     galleryOpened = false
                 },
