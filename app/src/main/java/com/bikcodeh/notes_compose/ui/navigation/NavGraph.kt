@@ -230,7 +230,9 @@ fun NavGraphBuilder.writeRoute(
                 val type = context.contentResolver.getType(uri)?.split("/")?.last() ?: "jpg"
                 viewModel.addImage(image = uri, imageType = type)
             },
-            onImageDeleteClicked = {}
+            onImageDeleteClicked = {
+                galleryState.removeImage(it)
+            }
         )
     }
 }

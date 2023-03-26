@@ -2,6 +2,7 @@ package com.bikcodeh.notes_compose.presentation.util
 
 import android.net.Uri
 import androidx.core.net.toUri
+import com.bikcodeh.notes_compose.data.local.database.entity.ImageToDelete
 import com.bikcodeh.notes_compose.data.local.database.entity.ImageToUpload
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -73,6 +74,16 @@ fun retryUploadingImageToFirebase(
         storageMetadata { },
         imageToUpload.sessionUri.toUri()
     ).addOnSuccessListener { onSuccess() }
+}
+
+
+fun retryDeletingImageFromFirebase(
+    imageToDelete: ImageToDelete,
+    onSuccess: () -> Unit
+) {
+    val storage = FirebaseStorage.getInstance().reference
+    storage.child(imageToDelete.remoteImagePath).delete()
+        .addOnSuccessListener { onSuccess() }
 }
 
 fun extractImagePath(fullImageUrl: String): String {

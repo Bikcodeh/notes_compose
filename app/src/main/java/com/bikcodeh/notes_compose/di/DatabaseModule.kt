@@ -3,6 +3,7 @@ package com.bikcodeh.notes_compose.di
 import android.content.Context
 import androidx.room.Room
 import com.bikcodeh.notes_compose.data.local.database.ImagesDatabase
+import com.bikcodeh.notes_compose.data.local.database.dao.ImageToDeleteDao
 import com.bikcodeh.notes_compose.data.local.database.dao.ImagesToUploadDao
 import dagger.Module
 import dagger.Provides
@@ -28,4 +29,8 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun providesImageDao(database: ImagesDatabase): ImagesToUploadDao = database.imageToUploadDao()
+
+    @Provides
+    @Singleton
+    fun providesDeleteImageDao(database: ImagesDatabase): ImageToDeleteDao = database.imageToDeleteDao()
 }
