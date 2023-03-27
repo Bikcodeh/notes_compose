@@ -26,6 +26,7 @@ import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.domain.commons.fold
 import com.bikcodeh.notes_compose.domain.repository.Diaries
 import com.bikcodeh.notes_compose.presentation.components.DisplayAlertDialog
+import java.time.ZonedDateTime
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
@@ -38,9 +39,12 @@ fun HomeScreen(
     navigateToWriteWithArgs: (String) -> Unit,
     navigateToAuth: () -> Unit,
     onLogOut: () -> Unit,
-    deleteAlliDiaries: () -> Unit
+    deleteAlliDiaries: () -> Unit, dateIsSelected: Boolean,
+    onDateSelected: (ZonedDateTime) -> Unit,
+    onDateReset: () -> Unit
 
-    ) {
+
+) {
     var paddingValues by remember { mutableStateOf(PaddingValues()) }
     var dialogOpened by remember { mutableStateOf(false) }
     var deleteAllDialogOpened by remember { mutableStateOf(false) }
@@ -54,7 +58,13 @@ fun HomeScreen(
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
-                HomeTopBar(onMenuClicked = onMenuClicked, scrollBehavior = scrollBehavior)
+                HomeTopBar(
+                    onMenuClicked = onMenuClicked,
+                    scrollBehavior = scrollBehavior,
+                    dateIsSelected = dateIsSelected,
+                    onDateSelected = onDateSelected,
+                    onDateReset = onDateReset
+                )
             },
             floatingActionButton = {
                 FloatingActionButton(

@@ -163,7 +163,14 @@ fun NavGraphBuilder.homeRoute(
                         scope.launch { drawerState.close() }
                     }
                 )
-            }
+            },
+            onDateReset = {
+                viewModel.getDiaries()
+            },
+            onDateSelected = {
+                viewModel.getDiaries(it)
+            },
+            dateIsSelected = viewModel.dateIsSelected
         )
         LaunchedEffect(key1 = Unit) {
             MongoDB.configureRealm()

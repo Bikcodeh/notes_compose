@@ -15,10 +15,14 @@ import io.realm.kotlin.log.LogLevel
 import io.realm.kotlin.mongodb.App
 import io.realm.kotlin.mongodb.sync.SyncConfiguration
 import io.realm.kotlin.query.Sort
+import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.mongodb.kbson.ObjectId
+import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
 
 object MongoDB : MongoRepository {
 
@@ -50,6 +54,34 @@ object MongoDB : MongoRepository {
             realm.query<Diary>(query = "ownerId == $0", user?.id)
                 .sort(property = "date", sortOrder = Sort.DESCENDING)
                 .asFlow()
+                .map { result ->
+                    result.list.groupBy {
+                        it.date.toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
+                    }
+                }
+        }
+    }
+
+    override fun getFilteredDiaries(zonedDateTime: ZonedDateTime): Flow<Diaries> {
+        return makeSafeRequestFlow {
+            realm.query<Diary>(
+                "ownerId == $0 AND date < $1 AND date > $2",
+                user?.id,
+                RealmInstant.from(
+                    LocalDateTime.of(
+                        zonedDateTime.toLocalDate().plusDays(1),
+                        LocalTime.MIDNIGHT
+                    ).toEpochSecond(zonedDateTime.offset), 0
+                ),
+                RealmInstant.from(
+                    LocalDateTime.of(
+                        zonedDateTime.toLocalDate(),
+                        LocalTime.MIDNIGHT
+                    ).toEpochSecond(zonedDateTime.offset), 0
+                )
+            ).asFlow()
                 .map { result ->
                     result.list.groupBy {
                         it.date.toInstant()
@@ -97,12 +129,13 @@ object MongoDB : MongoRepository {
     override suspend fun deleteDiary(id: ObjectId): Result<Boolean> {
         return makeSafeRequest {
             realm.write {
-                val diary = query<Diary>(query = "_id == $0 AND ownerId == $1", id, user?.id).first().find()
+                val diary =
+                    query<Diary>(query = "_id == $0 AND ownerId == $1", id, user?.id).first().find()
                 if (diary != null) {
                     delete(diary)
                     true
                 } else {
-                 throw DiaryNotExistException()
+                    throw DiaryNotExistException()
                 }
             }
         }
