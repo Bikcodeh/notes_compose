@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace 'com.bikcodeh.notes_compose'
-    compileSdk 33
+    compileSdk ProjectConfig.compileSdk
 
     defaultConfig {
         applicationId "com.bikcodeh.notes_compose"
-        minSdk 24
-        targetSdk 33
+        minSdk ProjectConfig.minSdk
+        targetSdk ProjectConfig.targetSkd
         versionCode 1
         versionName "1.0"
 
@@ -48,7 +48,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.2'
+        kotlinCompilerExtensionVersion ProjectConfig.extensionVersion
     }
     packagingOptions {
         resources {
@@ -103,7 +103,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha04"
 
     // Splash API
-    implementation "androidx.core:core-splashscreen:1.0.0"
+    implementation libs.splash.api
 
     // Mongo DB Realm
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'

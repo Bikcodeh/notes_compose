@@ -1,0 +1,1 @@
+/Users/vhoyos/AndroidStudioProjects/Notes_Compose/buildSrc/build/classes/kotlin/main/ProjectConfig.class
