@@ -19,16 +19,17 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.bikcodeh.notes_compode.ui.model.Mood
 import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.data.repository.MongoDB
-import com.bikcodeh.notes_compose.domain.model.Mood
 import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationScreen
 import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationViewModel
 import com.bikcodeh.notes_compose.presentation.screens.home.HomeScreen
 import com.bikcodeh.notes_compose.presentation.screens.home.HomeViewModel
 import com.bikcodeh.notes_compose.presentation.screens.write.WriteScreen
 import com.bikcodeh.notes_compose.presentation.screens.write.WriteViewModel
-import com.bikcodeh.notes_compose.presentation.util.extension.toast
+import com.bikcodeh.notes_compose.util.extension.toast
+import com.example.domain.commons.Result.Loading
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import com.stevdzasan.messagebar.rememberMessageBarState
@@ -138,7 +139,7 @@ fun NavGraphBuilder.homeRoute(
         val context = LocalContext.current
 
         LaunchedEffect(key1 = diaries) {
-            if (diaries !is com.bikcodeh.notes_compose.domain.commons.Result.Loading) {
+            if (diaries !is Loading) {
                 onDataLoaded()
             }
         }
@@ -178,6 +179,7 @@ fun NavGraphBuilder.homeRoute(
     }
 }
 
+@OptIn(ExperimentalPagerApi::class)
 fun NavGraphBuilder.writeRoute(
     onBack: () -> Unit
 ) {

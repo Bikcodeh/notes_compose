@@ -15,9 +15,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.bikcodeh.notes_compode.ui.components.DiaryHolder
 import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.domain.model.Diary
-import com.bikcodeh.notes_compose.presentation.components.DiaryHolder
 import java.time.LocalDate
 import java.util.*
 

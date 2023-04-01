@@ -7,27 +7,24 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bikcodeh.notes_compode.ui.components.gallery.GalleryImage
+import com.bikcodeh.notes_compode.ui.components.gallery.GalleryState
+import com.bikcodeh.notes_compode.ui.model.Mood
 import com.bikcodeh.notes_compose.data.local.database.dao.ImageToDeleteDao
 import com.bikcodeh.notes_compose.data.local.database.dao.ImagesToUploadDao
 import com.bikcodeh.notes_compose.data.local.database.entity.ImageToDelete
 import com.bikcodeh.notes_compose.data.local.database.entity.ImageToUpload
 import com.bikcodeh.notes_compose.data.repository.MongoDB
-import com.bikcodeh.notes_compose.di.IoDispatcher
-import com.bikcodeh.notes_compose.domain.commons.fold
-import com.bikcodeh.notes_compose.domain.model.Diary
-import com.bikcodeh.notes_compose.domain.model.GalleryImage
-import com.bikcodeh.notes_compose.domain.model.GalleryState
-import com.bikcodeh.notes_compose.domain.model.Mood
-import com.bikcodeh.notes_compose.presentation.util.extractImagePath
-import com.bikcodeh.notes_compose.presentation.util.fetchImagesFromFirebase
-import com.bikcodeh.notes_compose.presentation.util.getBsonObjectId
-import com.bikcodeh.notes_compose.presentation.util.toRealmInstant
 import com.bikcodeh.notes_compose.ui.navigation.Screen
+import com.bikcodeh.notes_compose.util.extractImagePath
+import com.bikcodeh.notes_compose.util.getBsonObjectId
+import com.bikcodeh.notes_compose.util.toRealmInstant
+import com.example.domain.commons.DispatcherProvider
+import com.bikcodeh.notes_compose.domain.model.Diary
+import com.bikcodeh.notes_compose.domain.repository.FirebaseUtility
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.ZonedDateTime
@@ -38,7 +35,8 @@ class WriteViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val uploadDao: ImagesToUploadDao,
     private val deleteDao: ImageToDeleteDao,
-    @IoDispatcher private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val dispatcher: DispatcherProvider,
+    private val firebaseUtility: FirebaseUtility
 ) : ViewModel() {
 
     val galleryState = GalleryState()
@@ -74,7 +72,7 @@ class WriteViewModel @Inject constructor(
                             error = false,
                             selectedDiary = it
                         )
-                        fetchImagesFromFirebase(
+                        firebaseUtility.fetchImagesFromFirebase(
                             remoteImagePaths = it.images,
                             onImageDownload = { uri ->
                                 galleryState.addImage(
@@ -123,7 +121,7 @@ class WriteViewModel @Inject constructor(
         onSuccess: () -> Unit,
         onError: () -> Unit
     ) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(dispatcher.io) {
             if (uiState.selectedDiaryId != null) {
                 updateDiary(diary = diary, onSuccess = onSuccess, onError = onError)
             } else {
@@ -136,7 +134,7 @@ class WriteViewModel @Inject constructor(
         onSuccess: () -> Unit,
         onError: () -> Unit
     ) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(dispatcher.io) {
             MongoDB.addNewDiary(diary = diary.apply {
                 if (uiState.updatedDateTime != null) {
                     date = uiState.updatedDateTime!!
@@ -157,7 +155,7 @@ class WriteViewModel @Inject constructor(
         onSuccess: () -> Unit,
         onError: () -> Unit
     ) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(dispatcher.io) {
             MongoDB.updateDiary(diary.apply {
                 _id = org.mongodb.kbson.ObjectId(getBsonObjectId(uiState.selectedDiaryId))
                 date = if (uiState.updatedDateTime != null) {
@@ -182,7 +180,7 @@ class WriteViewModel @Inject constructor(
         onSuccess: () -> Unit,
         onError: () -> Unit
     ) {
-        viewModelScope.launch(dispatcher) {
+        viewModelScope.launch(dispatcher.io) {
             if (uiState.selectedDiaryId != null) {
                 MongoDB.deleteDiary(id = org.mongodb.kbson.ObjectId(getBsonObjectId(uiState.selectedDiaryId)))
                     .fold(
@@ -216,7 +214,7 @@ class WriteViewModel @Inject constructor(
             imagePath.putFile(galleryImage.image)
                 .addOnProgressListener {
                     it.uploadSessionUri?.let { sessionUri ->
-                        viewModelScope.launch(dispatcher) {
+                        viewModelScope.launch(dispatcher.io) {
                             uploadDao.addImageToUpload(
                                 ImageToUpload(
                                     remoteImagePath = galleryImage.remoteImagePath,
@@ -236,7 +234,7 @@ class WriteViewModel @Inject constructor(
             images.forEach { remotePath ->
                 storage.child(remotePath).delete()
                     .addOnFailureListener {
-                        viewModelScope.launch(dispatcher) {
+                        viewModelScope.launch(dispatcher.io) {
                             deleteDao.addImageToDelete(
                                 ImageToDelete(remoteImagePath = remotePath)
                             )
@@ -247,7 +245,7 @@ class WriteViewModel @Inject constructor(
             galleryState.imagesToBeDeleted.map { it.remoteImagePath }.forEach { remotePath ->
                 storage.child(remotePath).delete()
                     .addOnFailureListener {
-                        viewModelScope.launch(dispatcher) {
+                        viewModelScope.launch(dispatcher.io) {
                             deleteDao.addImageToDelete(
                                 ImageToDelete(remoteImagePath = remotePath)
                             )
@@ -258,7 +256,7 @@ class WriteViewModel @Inject constructor(
     }
 
     private suspend fun execute(action: () -> Unit) {
-        withContext(Dispatchers.Main) {
+        withContext(dispatcher.main) {
             action()
         }
     }

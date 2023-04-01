@@ -15,3 +15,7 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Notes_Compose"
 include ':app'
+include ':core:ui'
+include ':core:util'
+include ':data'
+include ':domain'

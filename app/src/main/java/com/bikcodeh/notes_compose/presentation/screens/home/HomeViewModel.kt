@@ -9,18 +9,13 @@ import androidx.lifecycle.viewModelScope
 import com.bikcodeh.notes_compose.data.local.database.dao.ImageToDeleteDao
 import com.bikcodeh.notes_compose.data.local.database.entity.ImageToDelete
 import com.bikcodeh.notes_compose.data.repository.MongoDB
-import com.bikcodeh.notes_compose.di.IoDispatcher
-import com.bikcodeh.notes_compose.domain.commons.Failure
-import com.bikcodeh.notes_compose.domain.commons.Result
-import com.bikcodeh.notes_compose.domain.commons.fold
+import com.bikcodeh.notes_compose.util.connectivity.ConnectivityObserver
+import com.example.domain.commons.DispatcherProvider
+import com.example.domain.commons.Failure
 import com.bikcodeh.notes_compose.domain.repository.Diaries
-import com.bikcodeh.notes_compose.presentation.util.connectivity.ConnectivityObserver
-import com.bikcodeh.notes_compose.presentation.util.handleError
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
@@ -32,7 +27,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val connectivity: ConnectivityObserver,
     private val deleteDao: ImageToDeleteDao,
-    @IoDispatcher private val dispatcher: CoroutineDispatcher
+    private val dispatcher: DispatcherProvider
 ) : ViewModel() {
 
     private lateinit var allDiariesJob: Job
@@ -61,7 +56,7 @@ class HomeViewModel @Inject constructor(
 
     private fun observeAllDiaries() {
         diaries.value = Result.Loading
-        allDiariesJob = viewModelScope.launch(dispatcher) {
+        allDiariesJob = viewModelScope.launch(dispatcher.io) {
             if (::filteredDiariesJob.isInitialized) {
                 filteredDiariesJob.cancelAndJoin()
             }
@@ -72,7 +67,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun observeFilteredDiaries(zonedDateTime: ZonedDateTime) {
-        filteredDiariesJob = viewModelScope.launch(dispatcher) {
+        filteredDiariesJob = viewModelScope.launch(dispatcher.io) {
             if (::allDiariesJob.isInitialized) {
                 allDiariesJob.cancelAndJoin()
             }
@@ -97,7 +92,7 @@ class HomeViewModel @Inject constructor(
                         val imagePath = "images/${userId}/${ref.name}"
                         storage.child(imagePath).delete()
                             .addOnFailureListener {
-                                viewModelScope.launch(dispatcher) {
+                                viewModelScope.launch(dispatcher.io) {
                                     deleteDao.addImageToDelete(
                                         ImageToDelete(
                                             remoteImagePath = imagePath
@@ -106,18 +101,26 @@ class HomeViewModel @Inject constructor(
                                 }
                             }
                     }
-                    viewModelScope.launch(dispatcher) {
+                    viewModelScope.launch(dispatcher.io) {
                         MongoDB.deleteAllDiaries()
                             .fold(
                                 onSuccess = { execute(onSuccess) },
-                                onError = { failure -> execute { onError(handleError(failure)) } },
+                                onError = { failure ->
+                                    execute {
+                                        onError(
+                                            Failure.getMessageResId(
+                                                failure
+                                            )
+                                        )
+                                    }
+                                },
                                 onLoading = {}
                             )
                     }
                 }
                 .addOnFailureListener { exception ->
                     onError(
-                        handleError(
+                        Failure.getMessageResId(
                             Failure.analyzeException(
                                 exception
                             )
@@ -125,12 +128,12 @@ class HomeViewModel @Inject constructor(
                     )
                 }
         } else {
-            onError(handleError(Failure.NetworkConnection()))
+            onError(Failure.getMessageResId(Failure.NetworkConnection()))
         }
     }
 
     private suspend fun execute(action: () -> Unit) {
-        withContext(Dispatchers.Main) {
+        withContext(dispatcher.main) {
             action()
         }
     }

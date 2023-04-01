@@ -37,11 +37,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.bikcodeh.notes_compode.ui.components.gallery.GalleryImage
+import com.bikcodeh.notes_compode.ui.components.gallery.GalleryState
+import com.bikcodeh.notes_compode.ui.model.Mood
 import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.domain.model.Diary
-import com.bikcodeh.notes_compose.domain.model.GalleryImage
-import com.bikcodeh.notes_compose.domain.model.GalleryState
-import com.bikcodeh.notes_compose.domain.model.Mood
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import java.time.ZonedDateTime

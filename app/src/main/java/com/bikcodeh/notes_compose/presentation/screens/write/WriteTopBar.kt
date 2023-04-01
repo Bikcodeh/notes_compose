@@ -28,10 +28,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import com.bikcodeh.notes_compode.ui.components.DisplayAlertDialog
 import com.bikcodeh.notes_compose.R
+import com.bikcodeh.notes_compose.util.toInstant
 import com.bikcodeh.notes_compose.domain.model.Diary
-import com.bikcodeh.notes_compose.presentation.components.DisplayAlertDialog
-import com.bikcodeh.notes_compose.presentation.util.toInstant
 import com.maxkeppeker.sheets.core.models.base.Header
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog

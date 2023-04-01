@@ -1,7 +1,7 @@
 package com.bikcodeh.notes_compose.presentation.screens.write
 
+import com.bikcodeh.notes_compode.ui.model.Mood
 import com.bikcodeh.notes_compose.domain.model.Diary
-import com.bikcodeh.notes_compose.domain.model.Mood
 import io.realm.kotlin.types.RealmInstant
 
 data class UiState(

@@ -28,19 +28,20 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.bikcodeh.notes_compode.ui.components.gallery.GalleryImage
+import com.bikcodeh.notes_compode.ui.components.gallery.GalleryState
+import com.bikcodeh.notes_compode.ui.components.gallery.GalleryUploader
+import com.bikcodeh.notes_compode.ui.model.Mood
 import com.bikcodeh.notes_compose.R
+import com.bikcodeh.notes_compose.util.extension.toast
 import com.bikcodeh.notes_compose.domain.model.Diary
-import com.bikcodeh.notes_compose.domain.model.GalleryImage
-import com.bikcodeh.notes_compose.domain.model.GalleryState
-import com.bikcodeh.notes_compose.domain.model.Mood
-import com.bikcodeh.notes_compose.presentation.components.GalleryUploader
-import com.bikcodeh.notes_compose.presentation.util.extension.toast
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import io.realm.kotlin.ext.toRealmList
 import kotlinx.coroutines.launch
 
+@ExperimentalMaterial3Api
 @Composable
 fun WriteContent(
     galleryState: GalleryState,
@@ -107,7 +108,7 @@ fun WriteContent(
                     focusedIndicatorColor = Color.Unspecified,
                     disabledIndicatorColor = Color.Unspecified,
                     unfocusedIndicatorColor = Color.Unspecified,
-                    placeholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
                 ),
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next
@@ -131,7 +132,7 @@ fun WriteContent(
                     focusedIndicatorColor = Color.Unspecified,
                     disabledIndicatorColor = Color.Unspecified,
                     unfocusedIndicatorColor = Color.Unspecified,
-                    placeholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
                 ),
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next
