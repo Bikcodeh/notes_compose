@@ -1,6 +1,6 @@
 package com.bikcodeh.notes_compose.data.repository
 
-import com.example.domain.commons.DispatcherProvider
+import com.bikcodeh.notes_compose.domain.commons.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject

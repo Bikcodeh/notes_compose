@@ -29,7 +29,7 @@ import com.bikcodeh.notes_compose.presentation.screens.home.HomeViewModel
 import com.bikcodeh.notes_compose.presentation.screens.write.WriteScreen
 import com.bikcodeh.notes_compose.presentation.screens.write.WriteViewModel
 import com.bikcodeh.notes_compose.util.extension.toast
-import com.example.domain.commons.Result.Loading
+import com.bikcodeh.notes_compose.domain.commons.Result.Loading
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import com.stevdzasan.messagebar.rememberMessageBarState

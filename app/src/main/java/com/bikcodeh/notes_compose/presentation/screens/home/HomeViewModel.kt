@@ -9,10 +9,12 @@ import androidx.lifecycle.viewModelScope
 import com.bikcodeh.notes_compose.data.local.database.dao.ImageToDeleteDao
 import com.bikcodeh.notes_compose.data.local.database.entity.ImageToDelete
 import com.bikcodeh.notes_compose.data.repository.MongoDB
-import com.bikcodeh.notes_compose.util.connectivity.ConnectivityObserver
-import com.example.domain.commons.DispatcherProvider
-import com.example.domain.commons.Failure
+import com.bikcodeh.notes_compose.domain.commons.DispatcherProvider
+import com.bikcodeh.notes_compose.domain.commons.Failure
+import com.bikcodeh.notes_compose.domain.commons.Result
+import com.bikcodeh.notes_compose.domain.commons.fold
 import com.bikcodeh.notes_compose.domain.repository.Diaries
+import com.bikcodeh.notes_compose.util.connectivity.ConnectivityObserver
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -1,6 +1,6 @@
 package com.bikcodeh.notes_compose.data.mappers
 
-import com.example.domain.commons.Mapper
+import com.bikcodeh.notes_compose.domain.commons.Mapper
 import com.bikcodeh.notes_compose.domain.model.ImageToDelete
 import javax.inject.Inject
 import com.bikcodeh.notes_compose.data.local.database.entity.ImageToDelete as ImageToDeleteEntity

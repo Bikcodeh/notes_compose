@@ -2,8 +2,9 @@ package com.bikcodeh.notes_compose.data.repository
 
 import com.bikcodeh.notes_compose.domain.BuildConfig
 import com.bikcodeh.notes_compose.util.toInstant
-import com.example.domain.commons.makeSafeRequest
-import com.example.domain.commons.makeSafeRequestFlow
+import com.bikcodeh.notes_compose.domain.commons.makeSafeRequest
+import com.bikcodeh.notes_compose.domain.commons.Result
+import com.bikcodeh.notes_compose.domain.commons.makeSafeRequestFlow
 import com.bikcodeh.notes_compose.domain.exception.DiaryNotExistException
 import com.bikcodeh.notes_compose.domain.model.Diary
 import com.bikcodeh.notes_compose.domain.repository.Diaries

@@ -6,7 +6,7 @@ import com.bikcodeh.notes_compose.data.local.database.dao.ImageToDeleteDao
 import com.bikcodeh.notes_compose.data.local.database.dao.ImagesToUploadDao
 import com.bikcodeh.notes_compose.data.mappers.ImageToDeleteMapper
 import com.bikcodeh.notes_compose.data.mappers.ImageToUploadMapper
-import com.example.domain.commons.DispatcherProvider
+import com.bikcodeh.notes_compose.domain.commons.DispatcherProvider
 import com.bikcodeh.notes_compose.domain.repository.FirebaseUtility
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

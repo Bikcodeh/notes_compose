@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.bikcodeh.notes_compode.ui.components.DisplayAlertDialog
 import com.bikcodeh.notes_compose.R
-import com.example.domain.commons.fold
+import com.bikcodeh.notes_compose.domain.commons.fold
 import com.bikcodeh.notes_compose.domain.repository.Diaries
 import java.time.ZonedDateTime
 

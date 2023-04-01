@@ -43,10 +43,11 @@ dependencies {
     implementation(project(":domain"))
 
     implementation libs.core.ktx
-    implementation libs.realm.sync
+    //implementation libs.realm.sync
+    implementation "io.realm.kotlin:library-sync:1.8.0-SNAPSHOT"
 
     implementation libs.hilt.android
-    implementation libs.hilt.compiler
+    kapt libs.hilt.compiler
 
     implementation libs.room.runtime
     implementation libs.room.ktx

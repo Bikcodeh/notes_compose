@@ -41,5 +41,6 @@ dependencies {
     implementation libs.core.ktx
     implementation libs.firebase.auth
     implementation libs.coroutines.core
-    implementation libs.realm.sync
+    //implementation libs.realm.sync
+    implementation "io.realm.kotlin:library-sync:1.8.0-SNAPSHOT"
 }
