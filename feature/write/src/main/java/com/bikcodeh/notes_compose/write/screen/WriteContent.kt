@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
 
-package com.bikcodeh.notes_compose.presentation.screens.write
+package com.bikcodeh.notes_compose.write.screen
 
 import android.net.Uri
 import androidx.compose.foundation.layout.*
@@ -32,14 +32,14 @@ import com.bikcodeh.notes_compode.ui.components.gallery.GalleryImage
 import com.bikcodeh.notes_compode.ui.components.gallery.GalleryState
 import com.bikcodeh.notes_compode.ui.components.gallery.GalleryUploader
 import com.bikcodeh.notes_compode.ui.model.Mood
-import com.bikcodeh.notes_compose.R
-import com.bikcodeh.notes_compose.util.extension.toast
 import com.bikcodeh.notes_compose.domain.model.Diary
+import com.bikcodeh.notes_compose.util.extension.toast
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import io.realm.kotlin.ext.toRealmList
 import kotlinx.coroutines.launch
+import com.bikcodeh.notes_compose.ui.R as CoreR
 
 @ExperimentalMaterial3Api
 @Composable
@@ -93,7 +93,7 @@ fun WriteContent(
                         .crossfade(true)
                         .build(),
                     contentDescription = stringResource(
-                        id = R.string.feel_description
+                        id = CoreR.string.feel_description
                     )
                 )
             }
@@ -102,7 +102,7 @@ fun WriteContent(
                 modifier = Modifier.fillMaxWidth(),
                 value = title,
                 onValueChange = onTitleChanged,
-                placeholder = { Text(text = stringResource(id = R.string.title_hint)) },
+                placeholder = { Text(text = stringResource(id = CoreR.string.title_hint)) },
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Unspecified,
@@ -126,7 +126,7 @@ fun WriteContent(
                 modifier = Modifier.fillMaxWidth(),
                 value = description,
                 onValueChange = onDescriptionChanged,
-                placeholder = { Text(text = stringResource(id = R.string.tell_me_about_it_hint)) },
+                placeholder = { Text(text = stringResource(id = CoreR.string.tell_me_about_it_hint)) },
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Unspecified,
@@ -165,14 +165,14 @@ fun WriteContent(
                             }
                         )
                     } else {
-                        context.toast(R.string.required_fields)
+                        context.toast(CoreR.string.required_fields)
                     }
                 }, modifier = Modifier
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = Shapes().small
             ) {
-                Text(text = stringResource(id = R.string.save))
+                Text(text = stringResource(id = CoreR.string.save))
             }
         }
     }

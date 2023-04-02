@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
 
-package com.bikcodeh.notes_compose.presentation.screens.write
+package com.bikcodeh.notes_compose.write.screen
 
 import android.annotation.SuppressLint
 import android.net.Uri
@@ -40,11 +40,11 @@ import coil.request.ImageRequest
 import com.bikcodeh.notes_compode.ui.components.gallery.GalleryImage
 import com.bikcodeh.notes_compode.ui.components.gallery.GalleryState
 import com.bikcodeh.notes_compode.ui.model.Mood
-import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.domain.model.Diary
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import java.time.ZonedDateTime
+import com.bikcodeh.notes_compose.ui.R as CoreR
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -153,7 +153,7 @@ fun ZoomableImage(
                 .crossfade(true)
                 .build(),
             contentScale = ContentScale.Fit,
-            contentDescription = stringResource(id = R.string.gallery_image_description)
+            contentDescription = stringResource(id = CoreR.string.gallery_image_description)
         )
         Row(
             modifier = Modifier
@@ -164,12 +164,12 @@ fun ZoomableImage(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(onClick = onCloseClicked) {
-                Icon(imageVector = Icons.Default.Close, contentDescription = stringResource(id = R.string.close_description))
-                Text(text = stringResource(id = R.string.close_description))
+                Icon(imageVector = Icons.Default.Close, contentDescription = stringResource(id = CoreR.string.close_description))
+                Text(text = stringResource(id = CoreR.string.close_description))
             }
             Button(onClick = onDeleteClicked) {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = stringResource(id = R.string.delete))
-                Text(text = stringResource(id = R.string.delete))
+                Icon(imageVector = Icons.Default.Delete, contentDescription = stringResource(id = CoreR.string.delete))
+                Text(text = stringResource(id = CoreR.string.delete))
             }
         }
     }

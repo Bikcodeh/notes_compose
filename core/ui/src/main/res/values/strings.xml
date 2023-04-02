@@ -18,4 +18,15 @@
     <string name="menu_description">Hamburger menu icon</string>
     <string name="date_description">Date icon</string>
     <string name="diary">Diary</string>
+    <string name="delete_success">Diary delete successfully</string>
+    <string name="delete_error">An error occurred while trying to delete, please try again later</string>
+    <string name="error_message">An error occurred while executing the operation, try again later</string>
+    <string name="title_hint">Title</string>
+    <string name="save">Save</string>
+    <string name="required_fields">Fields cannot be empty</string>
+    <string name="tell_me_about_it_hint">Tell me about it</string>
+    <string name="feel_description">Feeling image</string>
+    <string name="delete_confirmation">Are you sure you want to permanently delete this diary note %1$s ?</string>
+    <string name="pick_date">Pick a date</string>
+    <string name="back_description">Go back</string>
 </resources>

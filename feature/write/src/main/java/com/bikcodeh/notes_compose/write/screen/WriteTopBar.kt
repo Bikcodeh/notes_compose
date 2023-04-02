@@ -1,6 +1,6 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
 
-package com.bikcodeh.notes_compose.presentation.screens.write
+package com.bikcodeh.notes_compose.write.screen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,9 +29,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.bikcodeh.notes_compode.ui.components.DisplayAlertDialog
-import com.bikcodeh.notes_compose.R
-import com.bikcodeh.notes_compose.util.toInstant
 import com.bikcodeh.notes_compose.domain.model.Diary
+import com.bikcodeh.notes_compose.util.toInstant
 import com.maxkeppeker.sheets.core.models.base.Header
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -47,6 +46,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import com.bikcodeh.notes_compose.ui.R as CoreR
 
 @Composable
 fun WriteTopBar(
@@ -93,7 +93,7 @@ fun WriteTopBar(
             IconButton(onClick = onBack) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = stringResource(id = R.string.back_description)
+                    contentDescription = stringResource(id = CoreR.string.back_description)
                 )
             }
         },
@@ -134,7 +134,7 @@ fun WriteTopBar(
                 }) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = stringResource(id = R.string.close_description),
+                        contentDescription = stringResource(id = CoreR.string.close_description),
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -144,7 +144,7 @@ fun WriteTopBar(
                 }) {
                     Icon(
                         imageVector = Icons.Default.DateRange,
-                        contentDescription = stringResource(id = R.string.date_description),
+                        contentDescription = stringResource(id = CoreR.string.date_description),
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -167,7 +167,7 @@ fun WriteTopBar(
         },
         config = CalendarConfig(monthSelection = true, yearSelection = true),
         header = Header.Default(
-            stringResource(id = R.string.pick_date)
+            stringResource(id = CoreR.string.pick_date)
         )
     )
 
@@ -208,8 +208,8 @@ fun DeleteDiaryAction(
         )
     }
     DisplayAlertDialog(
-        title = stringResource(id = R.string.delete),
-        message = stringResource(id = R.string.delete_confirmation, selectedDiary?.title ?: ""),
+        title = stringResource(id = CoreR.string.delete),
+        message = stringResource(id = CoreR.string.delete_confirmation, selectedDiary?.title ?: ""),
         dialogOpened = openDialog,
         onDialogClosed = { openDialog = false },
         onYesClicked = onDeleteConfirmed
@@ -217,7 +217,7 @@ fun DeleteDiaryAction(
     IconButton(onClick = { expanded = !expanded }) {
         Icon(
             imageVector = Icons.Default.MoreVert,
-            contentDescription = stringResource(id = R.string.menu_description),
+            contentDescription = stringResource(id = CoreR.string.menu_description),
             tint = MaterialTheme.colorScheme.onSurface
         )
     }

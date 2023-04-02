@@ -1,4 +1,4 @@
-package com.bikcodeh.notes_compose.presentation.screens.write
+package com.bikcodeh.notes_compose.write.screen
 
 import com.bikcodeh.notes_compode.ui.model.Mood
 import com.bikcodeh.notes_compose.domain.model.Diary

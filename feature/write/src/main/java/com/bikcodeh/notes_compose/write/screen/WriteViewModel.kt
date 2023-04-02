@@ -1,4 +1,4 @@
-package com.bikcodeh.notes_compose.presentation.screens.write
+package com.bikcodeh.notes_compose.write.screen
 
 import android.net.Uri
 import androidx.compose.runtime.getValue
