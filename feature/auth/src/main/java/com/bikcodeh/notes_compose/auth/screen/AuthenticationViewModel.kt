@@ -1,4 +1,4 @@
-package com.bikcodeh.notes_compose.presentation.screens.auth
+package com.bikcodeh.notes_compose.auth.screen
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

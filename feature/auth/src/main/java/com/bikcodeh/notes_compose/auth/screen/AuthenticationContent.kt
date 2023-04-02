@@ -1,4 +1,4 @@
-package com.bikcodeh.notes_compose.presentation.screens.auth
+package com.bikcodeh.notes_compose.auth.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.bikcodeh.notes_compode.ui.components.GoogleButton
-import com.bikcodeh.notes_compose.R
+import com.bikcodeh.notes_compose.auth.R
 
 @Composable
 fun AuthenticationContent(

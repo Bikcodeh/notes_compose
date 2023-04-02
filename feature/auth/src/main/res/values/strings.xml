@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="auth_title">Welcome back</string>
+    <string name="auth_subtitle">Please sign in to continue.</string>
+    <string name="login_success">Successfully Authenticated!</string>
+    <string name="error_login">An error occurred while trying to sign in, please try again later</string>
+</resources>

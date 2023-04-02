@@ -21,19 +21,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.bikcodeh.notes_compode.ui.model.Mood
 import com.bikcodeh.notes_compose.R
+import com.bikcodeh.notes_compose.auth.navigation.authenticationRoute
+import com.bikcodeh.notes_compose.auth.screen.AuthenticationViewModel
 import com.bikcodeh.notes_compose.data.repository.MongoDB
-import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationScreen
-import com.bikcodeh.notes_compose.presentation.screens.auth.AuthenticationViewModel
+import com.bikcodeh.notes_compose.domain.commons.Result.Loading
 import com.bikcodeh.notes_compose.presentation.screens.home.HomeScreen
 import com.bikcodeh.notes_compose.presentation.screens.home.HomeViewModel
 import com.bikcodeh.notes_compose.presentation.screens.write.WriteScreen
 import com.bikcodeh.notes_compose.presentation.screens.write.WriteViewModel
 import com.bikcodeh.notes_compose.util.extension.toast
-import com.bikcodeh.notes_compose.domain.commons.Result.Loading
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
-import com.stevdzasan.messagebar.rememberMessageBarState
-import com.stevdzasan.onetap.rememberOneTapSignInState
 import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
@@ -71,54 +69,6 @@ fun SetupNavGraph(
             onBack = {
                 navController.popBackStack()
             }
-        )
-    }
-}
-
-@ExperimentalMaterial3Api
-fun NavGraphBuilder.authenticationRoute(
-    navigateToHome: () -> Unit,
-    onDataLoaded: () -> Unit
-) {
-    composable(route = Screen.Authentication.route) {
-        val viewModel: AuthenticationViewModel = hiltViewModel()
-        val loadingState by viewModel.loadingState
-        val authenticated by viewModel.authenticated
-        val oneTapState = rememberOneTapSignInState()
-        val messageBarState = rememberMessageBarState()
-        val context = LocalContext.current
-
-        LaunchedEffect(key1 = Unit) {
-            onDataLoaded()
-        }
-        AuthenticationScreen(
-            authenticated = authenticated,
-            loadingState = loadingState,
-            oneTapState = oneTapState,
-            messageBarState = messageBarState,
-            onButtonClicked = {
-                oneTapState.open()
-                viewModel.setLoading(true)
-            },
-            onSuccessfulFirebaseSignIn = {
-                viewModel.signInWithMongoAtlas(it,
-                    onSuccess = {
-                        messageBarState.addSuccess(context.getString(R.string.login_success))
-                        viewModel.setLoading(false)
-                    }, onError = {
-                        messageBarState.addError(Exception(context.getString(R.string.error_login)))
-                        viewModel.setLoading(false)
-                    })
-            },
-            onFailedFirebaseSignIn = {
-                messageBarState.addError(Exception(context.getString(R.string.error_login)))
-                viewModel.setLoading(false)
-            },
-            onDialogDismissed = {
-                messageBarState.addError(Exception(it))
-                viewModel.setLoading(false)
-            },
-            navigateToHome = navigateToHome
         )
     }
 }
