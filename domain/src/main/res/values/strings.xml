@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_connection">Ups! No internet connection, please try again later</string>
+    <string name="error_parsing">Ups! An error happened parsing the data</string>
+    <string name="error_server">Ups! An internal error server occurred, please try again later.</string>
+    <string name="error_unknown">Ups! An unexpected error happened, please try again later.</string>
+</resources>
