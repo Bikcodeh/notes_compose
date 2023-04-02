@@ -1,4 +1,4 @@
-package com.bikcodeh.notes_compose.presentation.screens.home
+package com.bikcodeh.notes_compose.home.screen
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue

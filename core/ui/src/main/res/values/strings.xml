@@ -13,4 +13,9 @@
     <string name="error_unknown">Ups! An unexpected error happened, please try again later.</string>
     <string name="gallery_image_description">Gallery images</string>
     <string name="add_icon_description">Add icon</string>
+    <string name="delete">Delete</string>
+    <string name="close_description">Close</string>
+    <string name="menu_description">Hamburger menu icon</string>
+    <string name="date_description">Date icon</string>
+    <string name="diary">Diary</string>
 </resources>

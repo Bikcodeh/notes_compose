@@ -1,4 +1,4 @@
-package com.bikcodeh.notes_compose.presentation.screens.home
+package com.bikcodeh.notes_compose.home.screen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -16,8 +16,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bikcodeh.notes_compode.ui.components.DiaryHolder
-import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.domain.model.Diary
+import com.bikcodeh.notes_compose.home.R
 import java.time.LocalDate
 import java.util.*
 

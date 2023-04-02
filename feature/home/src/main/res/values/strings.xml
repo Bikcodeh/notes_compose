@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="empty_diary">Empty Diary</string>
+    <string name="write_something">Write something</string>
+    <string name="all_diaries_deleted">All diaries deleted successfully</string>
+    <string name="sign_out">Sign out</string>
+    <string name="sign_out_message">Are you sure to sign out from your google account?</string>
+    <string name="delete_all_diaries">Delete all diaries</string>
+    <string name="delete_all_diaries_confirmation">Are you sure you want to permanently delete all your diaries?</string>
+    <string name="date_description">Date icon</string>
+    <string name="edit_description">Edit icon</string>
+    <string name="error_fetching_data">An error occurred fetching the data</string>
+    <string name="try_again">Please try again later</string>
+    <string name="logo_description">Logo description</string>
+</resources>

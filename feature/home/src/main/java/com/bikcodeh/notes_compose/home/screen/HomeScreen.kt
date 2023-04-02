@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package com.bikcodeh.notes_compose.presentation.screens.home
+package com.bikcodeh.notes_compose.home.screen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -23,11 +23,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.bikcodeh.notes_compode.ui.components.DisplayAlertDialog
-import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.domain.commons.fold
 import com.bikcodeh.notes_compose.domain.repository.Diaries
+import com.bikcodeh.notes_compose.home.R
 import java.time.ZonedDateTime
+import com.bikcodeh.notes_compose.ui.R as CoreR
 
+@ExperimentalFoundationApi
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @ExperimentalMaterial3Api
 @Composable
@@ -151,7 +153,7 @@ fun NavigationDrawerNotes(
                 ) {
                     Image(
                         modifier = Modifier.size(250.dp),
-                        painter = painterResource(id = R.drawable.logo),
+                        painter = painterResource(id = CoreR.drawable.logo),
                         contentDescription = stringResource(id = R.string.logo_description)
                     )
                 }
@@ -159,7 +161,7 @@ fun NavigationDrawerNotes(
                     label = {
                         Row(modifier = Modifier.padding(horizontal = 12.dp)) {
                             Image(
-                                painter = painterResource(id = R.drawable.google_logo),
+                                painter = painterResource(id = CoreR.drawable.google_logo),
                                 contentDescription = stringResource(
                                     id = R.string.logo_description
                                 )
@@ -180,7 +182,7 @@ fun NavigationDrawerNotes(
                             Image(
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = stringResource(
-                                    id = R.string.delete
+                                    id = CoreR.string.delete
                                 )
                             )
                             Spacer(modifier = Modifier.width(12.dp))

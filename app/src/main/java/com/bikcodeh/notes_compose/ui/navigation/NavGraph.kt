@@ -2,15 +2,10 @@
 
 package com.bikcodeh.notes_compose.ui.navigation
 
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
@@ -20,19 +15,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.bikcodeh.notes_compode.ui.model.Mood
+import com.bikcodeh.notes_compode.ui.navigation.Screen
 import com.bikcodeh.notes_compose.R
 import com.bikcodeh.notes_compose.auth.navigation.authenticationRoute
-import com.bikcodeh.notes_compose.auth.screen.AuthenticationViewModel
-import com.bikcodeh.notes_compose.data.repository.MongoDB
-import com.bikcodeh.notes_compose.domain.commons.Result.Loading
-import com.bikcodeh.notes_compose.presentation.screens.home.HomeScreen
-import com.bikcodeh.notes_compose.presentation.screens.home.HomeViewModel
+import com.bikcodeh.notes_compose.home.navigation.homeRoute
 import com.bikcodeh.notes_compose.presentation.screens.write.WriteScreen
 import com.bikcodeh.notes_compose.presentation.screens.write.WriteViewModel
 import com.bikcodeh.notes_compose.util.extension.toast
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
-import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
 @Composable
@@ -70,62 +61,6 @@ fun SetupNavGraph(
                 navController.popBackStack()
             }
         )
-    }
-}
-
-@ExperimentalMaterial3Api
-fun NavGraphBuilder.homeRoute(
-    navigateToWrite: () -> Unit,
-    navigateToWriteWithArgs: (String) -> Unit,
-    navigateToAuth: () -> Unit,
-    onDataLoaded: () -> Unit
-) {
-    composable(route = Screen.Home.route) {
-        val viewModel: HomeViewModel = hiltViewModel()
-        val diaries by viewModel.diaries
-        val authViewModel: AuthenticationViewModel = hiltViewModel()
-        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-        val scope = rememberCoroutineScope()
-        val context = LocalContext.current
-
-        LaunchedEffect(key1 = diaries) {
-            if (diaries !is Loading) {
-                onDataLoaded()
-            }
-        }
-        HomeScreen(
-            diaries = diaries,
-            onMenuClicked = {
-                scope.launch { drawerState.open() }
-            },
-            navigateToWriteScreen = navigateToWrite,
-            navigateToWriteWithArgs = navigateToWriteWithArgs,
-            drawerState = drawerState,
-            navigateToAuth = navigateToAuth,
-            onLogOut = { authViewModel.logOut() },
-            deleteAlliDiaries = {
-                viewModel.deleteAllDiaries(
-                    onSuccess = {
-                        context.toast(R.string.all_diaries_deleted)
-                        scope.launch { drawerState.close() }
-                    },
-                    onError = { messageResId ->
-                        context.toast(messageResId)
-                        scope.launch { drawerState.close() }
-                    }
-                )
-            },
-            onDateReset = {
-                viewModel.getDiaries()
-            },
-            onDateSelected = {
-                viewModel.getDiaries(it)
-            },
-            dateIsSelected = viewModel.dateIsSelected
-        )
-        LaunchedEffect(key1 = Unit) {
-            MongoDB.configureRealm()
-        }
     }
 }
 

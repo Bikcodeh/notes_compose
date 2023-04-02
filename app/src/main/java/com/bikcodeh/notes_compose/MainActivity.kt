@@ -8,9 +8,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
+import com.bikcodeh.notes_compode.ui.navigation.Screen
 import com.bikcodeh.notes_compode.ui.theme.Notes_ComposeTheme
 import com.bikcodeh.notes_compose.presentation.screens.main.MainViewModel
-import com.bikcodeh.notes_compose.ui.navigation.Screen
 import com.bikcodeh.notes_compose.ui.navigation.SetupNavGraph
 import dagger.hilt.android.AndroidEntryPoint
 import io.realm.kotlin.mongodb.App

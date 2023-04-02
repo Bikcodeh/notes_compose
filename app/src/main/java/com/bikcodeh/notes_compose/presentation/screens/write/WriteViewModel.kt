@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.bikcodeh.notes_compode.ui.components.gallery.GalleryImage
 import com.bikcodeh.notes_compode.ui.components.gallery.GalleryState
 import com.bikcodeh.notes_compode.ui.model.Mood
+import com.bikcodeh.notes_compode.ui.navigation.Screen
 import com.bikcodeh.notes_compose.data.local.database.dao.ImageToDeleteDao
 import com.bikcodeh.notes_compose.data.local.database.dao.ImagesToUploadDao
 import com.bikcodeh.notes_compose.data.local.database.entity.ImageToDelete
@@ -19,7 +20,6 @@ import com.bikcodeh.notes_compose.domain.commons.DispatcherProvider
 import com.bikcodeh.notes_compose.domain.commons.fold
 import com.bikcodeh.notes_compose.domain.model.Diary
 import com.bikcodeh.notes_compose.domain.repository.FirebaseUtility
-import com.bikcodeh.notes_compose.ui.navigation.Screen
 import com.bikcodeh.notes_compose.util.extractImagePath
 import com.bikcodeh.notes_compose.util.getBsonObjectId
 import com.bikcodeh.notes_compose.util.toRealmInstant
