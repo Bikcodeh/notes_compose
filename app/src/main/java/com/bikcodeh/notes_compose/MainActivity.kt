@@ -43,6 +43,6 @@ class MainActivity : ComponentActivity() {
 }
 
 private fun getStartDestination(): String {
-    val user = App.Companion.create(BuildConfig.APP_ID).currentUser
+    val user = App.Companion.create(com.bikcodeh.notes_compose.domain.BuildConfig.APP_ID).currentUser
     return if (user != null && user.loggedIn) Screen.Home.route else Screen.Authentication.route
 }
