@@ -31,8 +31,8 @@
 - Firebase storage
 - Firebase authentication
 - Mongo Db - Realm sync
-- Clean architecture (Domain, Data, Presentation)
-- Modules
+- Clean architecture
+- Modules (Domain, Data, Feature, Core)
 - MVVM
 - Repository pattern
 - StateFlow
